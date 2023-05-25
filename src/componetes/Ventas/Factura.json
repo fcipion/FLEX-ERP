@@ -1,0 +1,80 @@
+{
+    "compania": "6350d461c9b459ca1d63c243",
+    "sucursal": "63f432fe1479263b345bbab6",
+    "cliente": "63e07156c6b96bf4f794d09d",
+    "vendedor": "63589d99bebf9d301337c0f9",
+    "caja": "63eda7fc8be8934d80788674",
+    "doctor": null,
+    "totalDescuentos": 100,
+    "montoAplicado": 300,
+    "subTotal": 150,
+    "itbis": 0,
+    "total": 150,
+    "descuentosCB": 0,
+    "fecha_vencimiento": 1681443260272,
+    "fecha_contabilizacion": 1681443260272,
+    "comentarios": "",
+    "moneda": "63e10c6a13e077ea89878cbb",
+    "tipo_cambio": "63eda8ce8be8934d80788686",
+    "condicion_pago": "63f941f1854b048abb71f9ae",
+    "tipo_comprobante": null,
+    "ncf": "B1000000000001",
+    "fecha_vencimiento_ncf": "",
+    "rnc": "",
+    "tipo_ingreso": "63edaf1f74c2edc87c4e03b5",
+    "medio_pago": "63edafa480bf23c5c24ca171",
+    "detalles": [
+        {
+            "line_id": 0,
+            "producto": "6407ff2e77b97c5cd82e5b94",
+            "cantidad": "11",
+            "almacen": "63edb13180bf23c5c24ca18b",
+            "lista_precio": "63edb3f91c0168b436a1ef60",
+            "precio": "150",
+            "itbis": "6407ed97aa5671621d9660b4",
+            "total_itbis": 0,
+            "total_line": 1650,
+            "totalAntesDescuentos": 1650,
+            "totalTrasDescuentos": 1650,
+            "totalSinItbis": 1650,
+            "totalConItbis": 0,
+            "descuento_linea": 0,
+            "unidad_medida": "63f83a4302094cef81f7fec7",
+            "porcentajeITBIS": 0,
+            "estatus": true
+        }
+    ],
+    "proceso_medio_pago": [
+        {
+            "medio_pago": "63edafa480bf23c5c24ca171",
+            "cuenta": "640fe9c65d52dbed835dfe29",
+            "monto": "150"
+        },
+        {
+            "medio_pago": "64053942afdce3a363607412",
+            "cuenta": "123455521",
+            "monto": 100,
+            "datos_tarjeta": [
+                {
+                    "tarjeta": "63f8fa7602094cef81fbbe50",
+                    "numero": "1234",
+                    "propietario": "Fleirin Cipion"
+                }
+            ]
+        },
+        {
+            "medio_pago": "6405397cafdce3a3636076ac",
+            "cuenta": "123455521",
+            "monto": 100,
+            "datos_cheque": [
+                {
+                    "banco":"63f8f6da02094cef81faa812",
+                    "numero":"12344556644"
+                }
+            ]
+        }
+    ],
+    "reporte": false,
+    "estatus": true,
+    "cancelada": false
+}
