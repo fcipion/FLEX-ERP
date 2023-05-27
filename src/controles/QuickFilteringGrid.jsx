@@ -18,6 +18,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
             .reduce((accumulator, { id, fecha_contabilizacion, estatus, montoAplicado, caja, vendedor, cliente }) => {
                 const { descripcion: cajaDescripcion } = caja;
                 const { nombre: clienteNombre, descripcion: clienteDescripcion } = cliente;
+                const { nombres: vendedorNombre, apellidos: apellidoVendedor } = vendedor;
 
                 const newRow = {
                     id,
@@ -27,7 +28,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
                     estatus,
                     importe: montoAplicado,
                     'caja.descripcion': cajaDescripcion,
-                    'vendedor.nombre': vendedor,
+                    'vendedor.nombre': `${vendedorNombre} ${apellidoVendedor}`,
                     'cliente.nombre': clienteNombre,
                     'cliente.descripcion': clienteDescripcion
                 };
