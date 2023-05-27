@@ -1,34 +1,41 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
-import { DataGrid, GridToolbar, ridActionsCellItem, GridRowId, GridColumns, GridActionsCellItem } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar, GridActionsCellItem } from '@mui/x-data-grid';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import SecurityIcon from '@mui/icons-material/Security';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import { randomCreatedDate, randomUpdatedDate, renderEditStatus, renderStatus, useDemoData } from '@mui/x-data-grid-generator';
-import { IconView360 } from '@tabler/icons';
-import { Button, Divider, Grid, IconButton } from '@mui/material';
-import { color } from '@mui/system';
+import { Box, Button, Divider, Grid, IconButton } from '@mui/material';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
-import DoDisturbOffTwoToneIcon from '@mui/icons-material/DoDisturbOffTwoTone';
-import CheckCircleOutlineSharpIcon from '@mui/icons-material/CheckCircleOutlineSharp';
-import { red } from '@mui/material/colors';
-
-const VISIBLE_FIELDS = ['name', 'rating', 'country', 'dateCreated', 'isAdmin', 'actions'];
 
 export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAdd }) {
     // Otherwise filter will be applied on fields such as the hidden column id
     // const columns = React.useMemo(() => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)), [data.columns]);
-    const resultado = { columns: '', rows: '' };
-    // setUpdate(false);
+    const resultado = {
+        columns: data.columns,
+        rows: data.rows
+            .filter((result) => result.estatus === true)
+            // eslint-disable-next-line camelcase
+            .reduce((accumulator, { id, fecha_contabilizacion, estatus, montoAplicado, caja, vendedor, cliente }) => {
+                const { descripcion: cajaDescripcion } = caja;
+                const { nombre: clienteNombre, descripcion: clienteDescripcion } = cliente;
 
-    resultado.columns = data.columns;
-    resultado.rows = data.rows.filter((result) => result.estatus === true);
+                const newRow = {
+                    id,
+                    // eslint-disable-next-line camelcase
+                    fecha_contabilizacion,
+                    vendedor,
+                    estatus,
+                    importe: montoAplicado,
+                    'caja.descripcion': cajaDescripcion,
+                    'vendedor.nombre': vendedor,
+                    'cliente.nombre': clienteNombre,
+                    'cliente.descripcion': clienteDescripcion
+                };
 
-    console.log('Resultados', resultado);
+                accumulator.push(newRow);
+                return accumulator;
+            }, [])
+    };
 
     const actions = {
         field: 'actions',
@@ -58,9 +65,9 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
 
     const columns = [...data.columns.filter((data) => data.field !== 'descripcion' && data.field !== 'id' && data.field !== 'estatus')];
     // columns[1].flex = '1';
-    console.log('columns', columns);
+
     const nombre = {
-        field: 'descripcion',
+        field: 'cliente.descripcion',
         headerName: 'Descripción',
         sortable: true,
         filterable: true,
@@ -86,6 +93,27 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
         headerClassName: 'headerStyle'
     };
 
+    const renderEstatusCell = ({ row }) => {
+        const { estatus } = row;
+        const backgroundColor = estatus ? '#00c853' : 'red';
+        const text = estatus ? 'Activo' : 'Inactivo';
+
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    backgroundColor,
+                    borderRadius: '10px',
+                    flex: 1,
+                    color: 'white',
+                    opacity: 0.6
+                }}
+            >
+                {text}
+            </div>
+        );
+    };
+
     const estatus = {
         field: 'estatus',
         headerName: 'Estatus',
@@ -94,43 +122,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
         groupable: true,
         aggregable: true,
         disableExport: true,
-        renderCell: (params) => {
-            console.log(params);
-
-            return params.row.estatus ? (
-                <>
-                    {' '}
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            backgroundColor: '#00c853',
-                            borderRadius: '10px',
-                            flex: 1,
-                            color: 'white',
-                            opacity: 0.6
-                        }}
-                    >
-                        Activo
-                    </div>{' '}
-                </>
-            ) : (
-                <>
-                    {' '}
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            backgroundColor: 'red',
-                            borderRadius: '10px',
-                            flex: 1,
-                            opacity: 0.6,
-                            color: 'white'
-                        }}
-                    >
-                        Inactivo
-                    </div>{' '}
-                </>
-            );
-        },
+        renderCell: renderEstatusCell,
         hide: false,
         size: 'small',
         color: 'red',
@@ -194,10 +186,10 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
             </Grid>
             <DataGrid
                 style={{ marginTop: '10px' }}
-                {...resultado}
                 disableColumnFilter
                 disableColumnSelector
                 disableDensitySelector
+                rows={resultado.rows}
                 columns={columnsData}
                 components={{ Toolbar: GridToolbar }}
                 rowHeight
