@@ -288,7 +288,7 @@ const FacturasVentas = () => {
         nota_debito: false
     };
 
-    const [facturas, setFacturas] = React.useState(venta.data ? { ...venta.data } : inicialState); // modo === "edit" ? { ...venta.data } : inicialState
+    const [facturas, setFacturas] = React.useState(inicialState); // venta.data ? { ...venta.data } : inicialState); // modo === "edit" ? { ...venta.data } : inicialState
 
     // Actualizar useState de facturas;
     const HandlerChangeValues = (field, value, proceso, row, SetFieldValue, idProducto, id) => {
@@ -514,9 +514,9 @@ const FacturasVentas = () => {
     }, [dispatch]);
 
     // const { paginas } = useSelector((state) => state.pagina);
-    React.useEffect(() => {
-        setFacturas(venta.length !== 0 ? { ...venta.data } : inicialState);
-    }, [accion]);
+    // React.useEffect(() => {
+    //     setFacturas(venta.length !== 0 ? { ...venta.data } : inicialState);
+    // }, [accion]);
 
     const handleChangeValue = (value, row, SetFieldValue, id, type, DatosProducto) => {
         if (type === 'c') {
@@ -655,20 +655,6 @@ const FacturasVentas = () => {
         setDataRows((previewRows) => [...previewRows.filter((Row) => Row.line_id !== row.line_id)]);
         setFieldValue('detalle', dataRows);
     };
-    // React.useEffect(() => {
-    //     if (modo === 'edit') {
-    //         dispatch(getVentaById(id));
-    //         setFacturas((prviewData) => {
-    //             if (venta.data) {
-    //                 prviewData = { ...venta.data };
-    //             }
-
-    //             return prviewData;
-    //         });
-    //     } else {
-    //         setFacturas(inicialState);
-    //     }
-    // }, [id]);
 
     const [alertValue, setAlert] = useState({ type: '', message: '', open: false });
     const [modoAccion, setModoAccion] = useState();
@@ -993,20 +979,8 @@ const FacturasVentas = () => {
                             // const modoAccion = modo;
                             let result = '';
 
-                            value = facturas;
-                            const { _id, id, ...datosValue } = value;
-
-                            // validar campos requeridos;
-                            // Validar campos requerdio
-
-                            // setFacturas((previewRows) => {
-                            //     if (previewRows.cliente === '') {
-                            //         alert('Campo cliente requerido');
-                            //         setSubmitting(false);
-                            //     }
-
-                            //     return previewRows;
-                            // });
+                            // value = facturas;
+                            // const { _id, id, ...datosValue } = value;
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -1020,7 +994,7 @@ const FacturasVentas = () => {
                                         // alert(JSON.stringify(value));
                                         result = await axios.post(
                                             `${url}/registro_venta`,
-                                            datosValue // .proceso_medio_pago.fill((result) => result.monto > 0)
+                                            value // .proceso_medio_pago.fill((result) => result.monto > 0)
                                         );
                                         console.log('result', result);
                                         if (!result.error) {
@@ -1069,7 +1043,7 @@ const FacturasVentas = () => {
                                         break;
                                     case 'Editar':
                                         /* eslint no-underscore-dangle: 0 */
-                                        result = await axios.put(`${url}/actualizar_venta/${_id}`, datosValue);
+                                        result = await axios.put(`${url}/actualizar_venta/${id}`, value);
                                         console.log('result', result);
                                         if (!result.error) {
                                             setMessageInfo({
@@ -1081,7 +1055,7 @@ const FacturasVentas = () => {
 
                                     case 'Editar nuevo':
                                         /* eslint no-underscore-dangle: 0 */
-                                        result = await axios.put(`${url}/actualizar_venta/${_id}`, datosValue);
+                                        result = await axios.put(`${url}/actualizar_venta/${id}`, value);
                                         resetForm();
                                         navegate(`/facturaVenta/create/0/${generateId()}`);
                                         console.log('result', result);
@@ -1247,7 +1221,7 @@ const FacturasVentas = () => {
                                                                 Id="cliente"
                                                                 SetFieldValue={setFieldValue}
                                                                 Label="Cliente"
-                                                                Value={facturas.cliente}
+                                                                Value={values.cliente}
                                                                 Onchange={(value) => {
                                                                     HandlerChangeValues(
                                                                         'cliente',
@@ -1274,7 +1248,7 @@ const FacturasVentas = () => {
                                                                 Id="sucursal"
                                                                 SetFieldValue={setFieldValue}
                                                                 Label="Sucursal"
-                                                                Value={facturas.sucursal}
+                                                                Value={values.sucursal}
                                                                 Onchange={(value) => {
                                                                     HandlerChangeValues(
                                                                         'sucursal',
@@ -1294,7 +1268,7 @@ const FacturasVentas = () => {
                                                                 <DatePicker
                                                                     id="fecha_contabilizacion"
                                                                     label="Fecha de contabilización"
-                                                                    value={facturas.fecha_contabilizacion}
+                                                                    value={values.fecha_contabilizacion}
                                                                     onBlur={handleBlur}
                                                                     fullWidth
                                                                     error={errors.fecha_contabilizacion && touched.fecha_contabilizacion}
@@ -1324,7 +1298,7 @@ const FacturasVentas = () => {
                                                                 <DatePicker
                                                                     id="fecha_vencimiento"
                                                                     label="Fecha de vencimientos"
-                                                                    value={facturas.fecha_vencimiento}
+                                                                    value={values.fecha_vencimiento}
                                                                     fullWidth
                                                                     onBlur={handleBlur}
                                                                     required
@@ -1356,7 +1330,7 @@ const FacturasVentas = () => {
                                                                 Id="tipo_comprobante"
                                                                 SetFieldValue={setFieldValue}
                                                                 Label="Tipo de comprobantes"
-                                                                Value={facturas.tipo_comprobante}
+                                                                Value={values.tipo_comprobante}
                                                                 required
                                                                 Onchange={(value) => {
                                                                     // handleChangeValue(value, '', '', 'tipo_comprobante', 'c');
@@ -1374,7 +1348,7 @@ const FacturasVentas = () => {
                                                     <Grid item xs={6}>
                                                         <Item>
                                                             <TextField
-                                                                value={facturas.ncf}
+                                                                values={value.ncf}
                                                                 id="ncf"
                                                                 name="ncf"
                                                                 fullWidth
@@ -1404,7 +1378,7 @@ const FacturasVentas = () => {
                                                                 <DatePicker
                                                                     id="fecha_vencimiento_ncf"
                                                                     label="Fecha de vencimientos NCF"
-                                                                    value={facturas.fecha_vencimiento_ncf}
+                                                                    value={values.fecha_vencimiento_ncf}
                                                                     // onBlur={handleBlur}
                                                                     fullWidth
                                                                     disabled
@@ -1440,7 +1414,7 @@ const FacturasVentas = () => {
                                                                 SetFieldValue={setFieldValue}
                                                                 Label="Doctor"
                                                                 required
-                                                                Value={facturas.doctor}
+                                                                Value={values.doctor}
                                                                 Onchange={(value) => {
                                                                     // handleChangeValue(value, '', '', 'doctor', 'c');
                                                                     HandlerChangeValues(
@@ -1457,7 +1431,7 @@ const FacturasVentas = () => {
                                                     <Grid item xs={6}>
                                                         <Item>
                                                             <TextField
-                                                                defaultValue={facturas.comentarios}
+                                                                defaultValue={values.comentarios}
                                                                 id="comentarios"
                                                                 name="comentarios"
                                                                 fullWidth
@@ -1495,7 +1469,7 @@ const FacturasVentas = () => {
                                                     <Grid item xs={6}>
                                                         <Item>
                                                             <TextField
-                                                                defaultValue={formatter.format(facturas.descuentosCB)}
+                                                                defaultValue={formatter.format(values.descuentosCB)}
                                                                 // value={formatter.format(valueDescuentoCB)}
                                                                 id="descuentosCB"
                                                                 name="descuentosCB"
@@ -1578,7 +1552,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'right' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.subtotal)}
+                                                                value={formatter.format(values.subtotal)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1603,7 +1577,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'right' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.totalDescuentos)}
+                                                                value={formatter.format(values.totalDescuentos)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1627,7 +1601,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'left' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.itbis)}
+                                                                value={formatter.format(values.itbis)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1651,7 +1625,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'left' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.total)}
+                                                                value={formatter.format(values.total)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1677,7 +1651,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'left' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.montoAplicado)}
+                                                                value={formatter.format(values.montoAplicado)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1703,7 +1677,7 @@ const FacturasVentas = () => {
                                                                 style={{ textAlign: 'left' }}
                                                                 size="small"
                                                                 variant="standard"
-                                                                value={formatter.format(facturas.totalPendiente)}
+                                                                value={formatter.format(values.totalPendiente)}
                                                             />
                                                         </Item>
                                                     </Grid>
@@ -1773,7 +1747,7 @@ const FacturasVentas = () => {
                                                 setValuePago(false);
                                             }}
                                             aplicarPago={Aplicarpago}
-                                            facturas={facturas}
+                                            facturas={values}
                                             setFacturas={setFacturas}
                                             HandlerChangeValues={HandlerChangeValues}
                                             productos={productos}
