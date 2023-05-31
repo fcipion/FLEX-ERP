@@ -38,6 +38,7 @@ import LineProgress from 'controles/LineProgress';
 import Person2TwoToneIcon from '@mui/icons-material/Person2TwoTone';
 import EnhancedEncryptionTwoToneIcon from '@mui/icons-material/EnhancedEncryptionTwoTone';
 import DropRols from 'controles/DropRols';
+import { transformUserData } from "../../utils/dataTransform";
 
 const formSchema = Yup.object().shape({
     compania: Yup.string().required('Requerido'),
@@ -143,7 +144,7 @@ const Usuarios = () => {
             {console.log('usuario', usuarios)}
             {usuarios.length !== 0 ? (
                 <MainCard title="Listado de usuarios">
-                    <QuickFilteringGrid data={usuarios} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid data={transformUserData(usuarios)} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
                 </MainCard>
             ) : (
                 <LineProgress />

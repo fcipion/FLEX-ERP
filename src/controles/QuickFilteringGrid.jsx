@@ -12,30 +12,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
     // const columns = React.useMemo(() => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)), [data.columns]);
     const resultado = {
         columns: data.columns,
-        rows: data.rows
-            .filter((result) => result.estatus === true)
-            // eslint-disable-next-line camelcase
-            .reduce((accumulator, { id, fecha_contabilizacion, estatus, montoAplicado, caja, vendedor, cliente }) => {
-                const { descripcion: cajaDescripcion } = caja;
-                const { nombre: clienteNombre, descripcion: clienteDescripcion } = cliente;
-                const { nombres: vendedorNombre, apellidos: apellidoVendedor } = vendedor;
-
-                const newRow = {
-                    id,
-                    // eslint-disable-next-line camelcase
-                    fecha_contabilizacion,
-                    vendedor,
-                    estatus,
-                    importe: montoAplicado,
-                    'caja.descripcion': cajaDescripcion,
-                    'vendedor.nombre': `${vendedorNombre} ${apellidoVendedor}`,
-                    'cliente.nombre': clienteNombre,
-                    'cliente.descripcion': clienteDescripcion
-                };
-
-                accumulator.push(newRow);
-                return accumulator;
-            }, [])
+        rows: data.rows.filter((result) => result.estatus === true)
     };
 
     const actions = {
@@ -68,7 +45,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
     // columns[1].flex = '1';
 
     const nombre = {
-        field: 'cliente.descripcion',
+        field: 'descripcion',
         headerName: 'Descripción',
         sortable: true,
         filterable: true,
