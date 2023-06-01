@@ -152,4 +152,87 @@ const transformProductData = (data) => {
     };
 };
 
-export { transformInvoiceData, transformUserData, transformInventoryData, transformProductData };
+const transformPaymentMethodData = (data) => {
+    const { rows, columns } = data;
+
+    const transformedRows = rows
+        // eslint-disable-next-line camelcase
+        .reduce((accumulator, { id, descripcion, sucursal, estatus }) => {
+            const { nombre: sucursalNombre } = sucursal;
+
+            const newRow = {
+                id,
+                descripcion,
+                'sucursal.descripcion': sucursalNombre,
+                estatus
+            };
+
+            accumulator.push(newRow);
+            return accumulator;
+        }, []);
+
+    return {
+        columns,
+        rows: transformedRows
+    };
+};
+
+const transformCreditCardData = (data) => {
+    const { rows, columns } = data;
+
+    const transformedRows = rows
+        // eslint-disable-next-line camelcase
+        .reduce((accumulator, { id, descripcion, sucursal, estatus }) => {
+            const { descripcion: sucursaldescripcion } = sucursal;
+
+            const newRow = {
+                id,
+                descripcion,
+                'sucursal.descripcion': sucursaldescripcion,
+                estatus
+            };
+
+            accumulator.push(newRow);
+            return accumulator;
+        }, []);
+
+    return {
+        columns,
+        rows: transformedRows
+    };
+};
+
+const transformTurnsData = (data) => {
+    const { rows, columns } = data;
+
+    const transformedRows = rows
+        // eslint-disable-next-line camelcase
+        .reduce((accumulator, { id, descripcion, sucursal, estatus }) => {
+            const { descripcion: sucursaldescripcion } = sucursal;
+
+            const newRow = {
+                id,
+                descripcion,
+                'sucursal.descripcion': sucursaldescripcion,
+                estatus
+            };
+
+            accumulator.push(newRow);
+            return accumulator;
+        }, []);
+
+    return {
+        columns,
+        rows: transformedRows
+    };
+};
+
+export {
+    transformInvoiceData,
+    transformUserData,
+    transformInventoryData,
+    transformProductData,
+    transformPaymentMethodData,
+    transformCreditCardData,
+    transformTurnsData
+};
