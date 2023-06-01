@@ -84,6 +84,7 @@ import { getItbiss, getItbisById } from 'store/slices/itbis';
 // import Factura from './Factura.json';
 import DropCajas from 'controles/DropCajas';
 import DropCodicionPago from 'controles/DropCodicionPago';
+import { transformInvoiceData } from '../../utils/dataTransform';
 
 // console.log('Facturas', Factura);
 const formSchema = Yup.object().shape({
@@ -739,7 +740,12 @@ const FacturasCompras = () => {
             {console.log('facturaVenta', ventas)}
             {ventas.length !== 0 ? (
                 <MainCard title="Listado de factura">
-                    <QuickFilteringGrid data={ventas} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformInvoiceData(ventas)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

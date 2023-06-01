@@ -37,6 +37,7 @@ import LineProgress from 'controles/LineProgress';
 import DropMonedas from 'controles/DropMonedas';
 import DropRols from 'controles/DropRols';
 import DropSucursal from 'controles/DropSucursal';
+import { transformPaymentMethodData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     sucursal: Yup.string().required('Requerido'),
@@ -137,7 +138,12 @@ const MediosPago = () => {
             {console.log('medioPagos', medioPagos)}
             {medioPagos.length !== 0 ? (
                 <MainCard title="Listado de medios de Pago">
-                    <QuickFilteringGrid data={medioPagos} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformPaymentMethodData(medioPagos)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

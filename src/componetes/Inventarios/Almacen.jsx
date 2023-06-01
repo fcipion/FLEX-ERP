@@ -37,6 +37,7 @@ import LineProgress from 'controles/LineProgress';
 import DropMonedas from 'controles/DropMonedas';
 import DropRols from 'controles/DropRols';
 import DropSucursal from 'controles/DropSucursal';
+import { transformInventoryData } from "../../utils/dataTransform";
 
 const formSchema = Yup.object().shape({
     sucursal: Yup.string().required('Requerido'),
@@ -137,7 +138,12 @@ const Almacen = () => {
             {console.log('almacens', almacens)}
             {almacens.length !== 0 ? (
                 <MainCard title="Listado de almacenes">
-                    <QuickFilteringGrid data={almacens} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformInventoryData(almacens)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

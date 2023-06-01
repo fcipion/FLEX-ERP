@@ -82,6 +82,7 @@ import { getDeterminacionPrecioById, getDeterminacionPrecios } from 'store/slice
 import { getItbiss, getItbisById } from 'store/slices/itbis';
 import ControlDetalleOrdenServicios from 'controles/ControlDetalleOrdenServicios';
 import DropVendedor from 'controles/DropVendedor';
+import { transformInvoiceData } from '../../utils/dataTransform';
 
 // import Factura from './Factura.json';
 // import DropCajas from 'controles/DropCajas';
@@ -890,7 +891,12 @@ const OrdenServicios = () => {
             {console.log('facturaVenta', ventas)}
             {ventas.length !== 0 ? (
                 <MainCard title="Listado de factura">
-                    <QuickFilteringGrid data={ventas} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformInvoiceData(ventas)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

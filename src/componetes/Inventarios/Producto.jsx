@@ -44,6 +44,7 @@ import DropClaseProducto from 'controles/DropClaseProducto';
 import DropITBIS from 'controles/DropITBIS';
 import DropUnidadMedida from 'controles/DropUnidadMedida';
 import DropListaPrecios from 'controles/DropListaPrecios';
+import { transformProductData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     sucursal: Yup.string().required('Requerido'),
@@ -157,7 +158,12 @@ const Producto = () => {
             {console.log('productos', productos)}
             {productos.length !== 0 ? (
                 <MainCard title="Listado de productos">
-                    <QuickFilteringGrid data={productos} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformProductData(productos)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

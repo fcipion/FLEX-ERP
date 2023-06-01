@@ -85,6 +85,7 @@ import { getProductos, getProductoById } from 'store/slices/producto';
 import Factura from './Factura.json';
 import DropCajas from 'controles/DropCajas';
 import DropCodicionPago from 'controles/DropCodicionPago';
+import { transformInvoiceData } from '../../utils/dataTransform';
 
 // console.log('Facturas', Factura);
 const formSchema = Yup.object().shape({
@@ -916,7 +917,7 @@ const FacturasVentas = () => {
             {ventas.length !== 0 ? (
                 <MainCard title="Listado de factura">
                     <QuickFilteringGrid
-                        data={ventas}
+                        data={transformInvoiceData(ventas)}
                         clickAdd={handlerAdd}
                         clickEdit={clickEdit}
                         clickView={clickView}

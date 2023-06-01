@@ -42,6 +42,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { transformTurnsData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     imagen: Yup.string().required('Requerido'),
@@ -145,7 +146,12 @@ const Turnos = () => {
             {console.log('turnos', turnos)}
             {turnos.length !== 0 ? (
                 <MainCard title="Listado de turnos">
-                    <QuickFilteringGrid data={turnos} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformTurnsData(turnos)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />

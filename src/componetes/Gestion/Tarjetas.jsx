@@ -37,6 +37,7 @@ import LineProgress from 'controles/LineProgress';
 import DropMonedas from 'controles/DropMonedas';
 import DropRols from 'controles/DropRols';
 import DropSucursal from 'controles/DropSucursal';
+import { transformCreditCardData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     imagen: Yup.string().required('Requerido'),
@@ -138,7 +139,12 @@ const Tarjetas = () => {
             {console.log('tarjetas', tarjetas)}
             {tarjetas.length !== 0 ? (
                 <MainCard title="Listado de tarjeta">
-                    <QuickFilteringGrid data={tarjetas} clickAdd={handlerAdd} clickEdit={clickEdit} clickView={clickView} />
+                    <QuickFilteringGrid
+                        data={transformCreditCardData(tarjetas)}
+                        clickAdd={handlerAdd}
+                        clickEdit={clickEdit}
+                        clickView={clickView}
+                    />
                 </MainCard>
             ) : (
                 <LineProgress />
