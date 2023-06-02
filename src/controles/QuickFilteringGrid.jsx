@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import { DataGrid, GridToolbar, GridActionsCellItem } from '@mui/x-data-grid';
@@ -8,6 +8,7 @@ import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 
 export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAdd }) {
+    const [pageSize, setPageSize] = useState(10);
     // Otherwise filter will be applied on fields such as the hidden column id
     // const columns = React.useMemo(() => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)), [data.columns]);
     const resultado = {
@@ -171,7 +172,10 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
                 columns={columnsData}
                 components={{ Toolbar: GridToolbar }}
                 rowHeight
-                autoPageSize
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                rowsPerPageOptions={[10, 20, 50, 100]}
+                pagination
                 disableExtendRowFullWidth={false}
                 componentsProps={{
                     toolbar: {
