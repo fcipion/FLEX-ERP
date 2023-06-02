@@ -171,7 +171,7 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
                 rows={resultado.rows}
                 columns={columnsData}
                 components={{ Toolbar: GridToolbar }}
-                rowHeight
+                getRowHeight={() => 'auto'}
                 pageSize={pageSize}
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 rowsPerPageOptions={[10, 20, 50, 100]}
