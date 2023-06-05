@@ -1,0 +1,9 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all Markdown files:
+*.md
+
+# Local
+src/componetes/ReprComerciales/client.jsx
