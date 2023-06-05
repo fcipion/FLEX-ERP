@@ -37,7 +37,7 @@ import LineProgress from 'controles/LineProgress';
 import DropMonedas from 'controles/DropMonedas';
 import DropRols from 'controles/DropRols';
 import DropSucursal from 'controles/DropSucursal';
-import { transformInventoryData } from "../../utils/dataTransform";
+import { transformInventoryData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     sucursal: Yup.string().required('Requerido'),

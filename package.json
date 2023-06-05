@@ -65,7 +65,7 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "prepare": "husky install",
-        "make:prettier": "prettier --write \"**/*.{js,jsx,css,html}\""
+        "make:prettier": "prettier --write \"**/*.{js,jsx,css,html,json}\""
     },
     "eslintConfig": {
         "extends": [
