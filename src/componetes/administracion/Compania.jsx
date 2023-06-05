@@ -42,7 +42,9 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const formSchema = Yup.object().shape({
     nombre: Yup.string().required('Requerido'),
-    rnc: Yup.number().required('Requerido'),
+    rnc: Yup.string()
+        .matches(/^\d{9}$/, 'El RNC debe tener exactamente 9 dígitos')
+        .required('Requerido'),
     direccion: Yup.string().required('Requerido'),
     email: Yup.string().email('Invalid email').required('Requerido'),
     telefono: Yup.string().required('Requerido'),
@@ -485,6 +487,11 @@ const Compania = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.rnc && touched.rnc}
                                                         helperText={touched.rnc && errors.rnc}
+                                                        inputProps={{
+                                                            maxLength: 9,
+                                                            inputMode: 'numeric',
+                                                            pattern: '[0-9]*'
+                                                        }}
                                                         renderInput={(params) => <TextField {...params} />}
                                                     />
                                                 </Grid>
