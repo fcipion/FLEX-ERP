@@ -105,24 +105,22 @@ const ClaseProductos = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/claseProducto/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/claseProducto/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/claseProducto/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/claseProducto/view/${value}/${generateId()}`);
     };
 
@@ -161,7 +159,6 @@ const ClaseProductos = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -173,7 +170,7 @@ const ClaseProductos = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_clase_producto`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -184,7 +181,7 @@ const ClaseProductos = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_clase_producto`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -197,7 +194,7 @@ const ClaseProductos = () => {
                                         result = await axios.post(`${url}/registro_clase_producto`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/claseProducto/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -207,7 +204,7 @@ const ClaseProductos = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_clase_producto/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -220,7 +217,7 @@ const ClaseProductos = () => {
                                         result = await axios.put(`${url}/actualizar_clase_producto/${id}`, value);
                                         resetForm();
                                         navegate(`/rol/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -230,7 +227,7 @@ const ClaseProductos = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_clase_producto`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -240,7 +237,7 @@ const ClaseProductos = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_clase_producto/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -263,13 +260,11 @@ const ClaseProductos = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

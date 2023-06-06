@@ -106,24 +106,22 @@ const UnidadMedidas = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/unidadMedida/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/unidadMedida/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/unidadMedida/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/unidadMedida/view/${value}/${generateId()}`);
     };
 
@@ -162,7 +160,6 @@ const UnidadMedidas = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -174,7 +171,7 @@ const UnidadMedidas = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_unidad_medida`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -185,7 +182,7 @@ const UnidadMedidas = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_unidad_medida`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +195,7 @@ const UnidadMedidas = () => {
                                         result = await axios.post(`${url}/registro_unidad_medida`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/unidadMedida/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +205,7 @@ const UnidadMedidas = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_unidad_medida/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +218,7 @@ const UnidadMedidas = () => {
                                         result = await axios.put(`${url}/actualizar_unidad_medida/${id}`, value);
                                         resetForm();
                                         navegate(`/unidadMedida/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +228,7 @@ const UnidadMedidas = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_unidad_medida`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +238,7 @@ const UnidadMedidas = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_unidad_medida/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -264,13 +261,11 @@ const UnidadMedidas = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

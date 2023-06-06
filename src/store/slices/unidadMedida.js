@@ -44,7 +44,7 @@ export function getUnidadMedida() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_unidad_medida`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getUnidadMedidaById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_unidad_medida/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

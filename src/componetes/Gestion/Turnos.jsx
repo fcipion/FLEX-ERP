@@ -82,8 +82,6 @@ const Turnos = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    // console.log('rol', rol);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -120,24 +118,22 @@ const Turnos = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/turno/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/turno/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/turno/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/turno/view/${value}/${generateId()}`);
     };
 
@@ -185,7 +181,6 @@ const Turnos = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -197,7 +192,7 @@ const Turnos = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_turnos`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +203,7 @@ const Turnos = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_turnos`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +216,7 @@ const Turnos = () => {
                                         result = await axios.post(`${url}/registro_turnos`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/turno/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +226,7 @@ const Turnos = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_turnos/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -244,7 +239,7 @@ const Turnos = () => {
                                         result = await axios.put(`${url}/actualizar_turnos/${id}`, value);
                                         resetForm();
                                         navegate(`/turno/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -254,7 +249,7 @@ const Turnos = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_turnos`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -264,7 +259,7 @@ const Turnos = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_turnos/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -287,13 +282,11 @@ const Turnos = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);
@@ -410,9 +403,6 @@ const Turnos = () => {
                                                                 error={errors.start_time && touched.start_time}
                                                                 helperText={touched.start_time && errors.start_time}
                                                                 onChange={(value) => {
-                                                                    // console.log('event', value);
-                                                                    // console.log('value', value);
-
                                                                     // setValue(value);
                                                                     setFieldValue('start_time', value);
                                                                 }}
@@ -426,9 +416,6 @@ const Turnos = () => {
                                                                 error={errors.end_time && touched.end_time}
                                                                 helperText={touched.end_time && errors.end_time}
                                                                 onChange={(value) => {
-                                                                    // console.log('event', value);
-                                                                    // console.log('value', value);
-
                                                                     // setValue(value);
                                                                     setFieldValue('end_time', value);
                                                                 }}

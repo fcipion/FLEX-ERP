@@ -61,7 +61,6 @@ export default function GridDetalleITBIS({ handleBlur, errors, touched, setField
 
     const handlerChange = (value, Row, SetFieldValue, Id) => {
         const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === Row.line_id);
-        console.log('indexRow', value);
 
         setDataRows((previewRows) => {
             previewRows[indexRow][Id] = value;
@@ -90,7 +89,7 @@ export default function GridDetalleITBIS({ handleBlur, errors, touched, setField
             // SetFieldValue('totalDescuentos', totalDescuentos);
             // SetFieldValue('itbis', itbis);
             // SetFieldValue('total', total);
-            // console.log('dataRows', dataRows);
+
             SetFieldValue('detalles', dataRows);
 
             return [...previewRows];
@@ -100,7 +99,6 @@ export default function GridDetalleITBIS({ handleBlur, errors, touched, setField
     const HandleValueChange = (event, valueField) => {
         const { id } = event.target;
 
-        console.log('valueField', id);
         document.getElementById([id]).value = formatter.format(valueField);
     };
 

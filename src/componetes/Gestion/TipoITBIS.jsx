@@ -75,8 +75,6 @@ const TipoItbis = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    // console.log('rol', rol);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -113,24 +111,22 @@ const TipoItbis = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/tipoitbis/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/tipoitbis/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tipoitbis/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tipoitbis/view/${value}/${generateId()}`);
     };
 
@@ -172,7 +168,6 @@ const TipoItbis = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -184,7 +179,7 @@ const TipoItbis = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_tipo_itbis`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -195,7 +190,7 @@ const TipoItbis = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_tipo_itbis`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +203,7 @@ const TipoItbis = () => {
                                         result = await axios.post(`${url}/registro_tipo_itbis`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/tipoitbis/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -218,7 +213,7 @@ const TipoItbis = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_tipo_itbis/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +226,7 @@ const TipoItbis = () => {
                                         result = await axios.put(`${url}/actualizar_tipo_itbis/${id}`, value);
                                         resetForm();
                                         navegate(`/tipoitbis/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +236,7 @@ const TipoItbis = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_tipo_itbis`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -251,7 +246,7 @@ const TipoItbis = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_tipo_itbis/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -274,13 +269,11 @@ const TipoItbis = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

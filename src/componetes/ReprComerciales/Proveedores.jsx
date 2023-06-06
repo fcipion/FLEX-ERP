@@ -88,7 +88,6 @@ const Proveedores = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('proveedore', proveedore);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -125,28 +124,25 @@ const Proveedores = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/proveedore/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/proveedore/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/proveedore/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/proveedore/view/${value}/${generateId()}`);
     };
 
-    console.log('error', error);
     return modo === 'Index' ? (
         <>
             {proveedores.length !== 0 ? (
@@ -202,7 +198,6 @@ const Proveedores = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -213,9 +208,8 @@ const Proveedores = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Create', value);
                                         result = await axios.post(`${url}/registro_proveedore`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -226,7 +220,7 @@ const Proveedores = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_proveedore`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -238,7 +232,7 @@ const Proveedores = () => {
                                         result = await axios.post(`${url}/registro_proveedore`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/proveedore/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -248,7 +242,7 @@ const Proveedores = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_proveedore/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -261,7 +255,7 @@ const Proveedores = () => {
                                         result = await axios.put(`${url}/actualizar_proveedore/${id}`, value);
                                         resetForm();
                                         navegate(`/proveedore/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -271,7 +265,7 @@ const Proveedores = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_proveedore`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -281,7 +275,7 @@ const Proveedores = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_proveedore/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -304,15 +298,11 @@ const Proveedores = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.proveedore = userData.proveedore;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
-
-                        console.log('valuesFor', errors);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

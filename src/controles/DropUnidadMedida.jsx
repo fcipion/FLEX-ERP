@@ -46,10 +46,7 @@ export default function DropUnidadMedida({ Id, SetFieldValue, Value, SetValue, L
         });
     }
 
-    // console.log('unidadMedidas', unidadMedidas);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('unidadMedidas', Values);
 
     React.useEffect(() => {
         let active = true;
@@ -146,7 +143,6 @@ export default function DropUnidadMedida({ Id, SetFieldValue, Value, SetValue, L
                     fullWidth
                     size="small"
                     onChange={(event, value) => {
-                        console.log('value.value', value.value);
                         if (value.value) {
                             SetFieldValue(Id, value.value);
                         } else {

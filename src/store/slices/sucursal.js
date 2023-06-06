@@ -44,7 +44,7 @@ export function getSucursales() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_sucursales`);
-            console.log('data', response);
+
             dispatch(slice.actions.getSucursalSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getSucursalById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_sucursales/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getSucursalSuccessById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

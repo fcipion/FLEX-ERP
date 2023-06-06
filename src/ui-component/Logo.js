@@ -15,8 +15,6 @@ import logo from '../assets/images/logo.png';
 const Logo = () => {
     const theme = useTheme();
 
-    console.log(logo);
-
     return (
         <>
             <img style={{ height: '60px', width: '150px' }} src={logo} alt="Logo" />

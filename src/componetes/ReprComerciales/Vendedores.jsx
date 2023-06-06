@@ -87,7 +87,6 @@ const Vendedores = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('compania', compania);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -124,30 +123,27 @@ const Vendedores = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/compania/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/compania/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/compania/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/compania/view/${value}/${generateId()}`);
     };
 
     // if (modo === 'edit' && moneda.length !== 0) {
-    //     console.log('moneda', moneda);
-    //     console.log('monedas', monedas);
+
     //     values.compania = moneda.data.compania;
     //     values.simbolo = moneda.data.simbolo;
     //     values.estatus = moneda.data.estatus;
@@ -156,13 +152,12 @@ const Vendedores = () => {
     //     const simbolo = JSON.stringify(DataSimbolo.find((data) => data.value === moneda.data.simbolo));
     //     setValueSimbolo(JSON.parse(simbolo));
 
-    //     console.log('Data Simbolo', JSON.parse(simbolo));
     // }
 
     // if (error !== null) {
     //     return alert(JSON.stringify(error));
     // }
-    console.log('error', error);
+
     return modo === 'Index' ? (
         <>
             {companias.length !== 0 ? (
@@ -214,7 +209,6 @@ const Vendedores = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -225,9 +219,8 @@ const Vendedores = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Create', value);
                                         result = await axios.post(`${url}/registro_compania`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -238,7 +231,7 @@ const Vendedores = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_compania`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -250,7 +243,7 @@ const Vendedores = () => {
                                         result = await axios.post(`${url}/registro_compania`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/compania/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -260,7 +253,7 @@ const Vendedores = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_compania/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -273,7 +266,7 @@ const Vendedores = () => {
                                         result = await axios.put(`${url}/actualizar_compania/${id}`, value);
                                         resetForm();
                                         navegate(`/compania/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -283,7 +276,7 @@ const Vendedores = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_moneda`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -293,7 +286,7 @@ const Vendedores = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_moneda/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -316,15 +309,11 @@ const Vendedores = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
-
-                        console.log('valuesFor', errors);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);
@@ -611,9 +600,6 @@ const Vendedores = () => {
                                                             error={errors.fecha_establecida && touched.fecha_establecida}
                                                             helperText={touched.fecha_establecida && errors.fecha_establecida}
                                                             onChange={(value) => {
-                                                                // console.log('event', value);
-                                                                // console.log('value', value);
-
                                                                 // setValue(value);
                                                                 setFieldValue('fecha_establecida', value);
                                                             }}

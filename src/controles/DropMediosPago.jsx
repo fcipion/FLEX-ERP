@@ -47,10 +47,7 @@ export default function DropmedioPago({ Id, SetFieldValue, Value, SetValue, Labe
         });
     }
 
-    console.log('medioPagos', medioPago);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

@@ -46,10 +46,7 @@ export default function DropTipoItbis({ Id, SetFieldValue, Value, SetValue, Labe
         });
     }
 
-    console.log('tipoitbiss', tipoitbiss);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

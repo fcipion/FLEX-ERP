@@ -15,8 +15,6 @@ export default function AccionButton({ isSubmitting, handlerCreate, options }) {
     const anchorRef = React.useRef(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-    console.log('isSubmitting', isSubmitting);
-
     const handleClick = () => {
         console.info(`You clicked ${options[selectedIndex]}`);
         handlerCreate(options[selectedIndex]);

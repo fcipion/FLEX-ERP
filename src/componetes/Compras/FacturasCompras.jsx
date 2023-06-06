@@ -86,7 +86,6 @@ import DropCajas from 'controles/DropCajas';
 import DropCodicionPago from 'controles/DropCodicionPago';
 import { transformInvoiceData } from '../../utils/dataTransform';
 
-// console.log('Facturas', Factura);
 const formSchema = Yup.object().shape({
     // compania: Yup.string().required('Requerido'),
     // cliente: Yup.string().required('Requerido'),
@@ -134,7 +133,6 @@ const formatter = new Intl.NumberFormat('en-US', {
 const HandleValueChange = (event, valueField) => {
     const { id } = event.target;
 
-    console.log('id', event);
     document.getElementById([id]).value = formatter.format(valueField[id]);
 };
 
@@ -271,9 +269,6 @@ const FacturasCompras = () => {
 
     // Actualizar useState de facturas;
     const HandlerChangeValues = (field, value, proceso, row, SetFieldValue, DatosProducto, id) => {
-        console.log('ValorCampo', value);
-        console.log('value', value);
-
         setFacturas((previewValues) => {
             // Retornar valores de la cabecera de la facturas
             // Agregar datos de la cabecera de la factura;
@@ -292,7 +287,6 @@ const FacturasCompras = () => {
                 const datosDeterminacionPrecios = determinacionPrecios.rows
                     .find((result) => result.lista_precio === '63edb3f91c0168b436a1ef60')
                     .detalles.find((dResulto) => {
-                        console.log('Resuldato', dResulto);
                         return (
                             /* eslint no-underscore-dangle: 0 */
                             dResulto.producto._id ===
@@ -309,7 +303,6 @@ const FacturasCompras = () => {
                         porcentajeITBIS += parseFloat(data.tipo_itbis.porcentaje);
                     });
                 }
-                console.log('valueItbis', porcentajeITBIS);
 
                 // DatosProducto.lista_precio_venta)
                 setFacturas((previewRows) => {
@@ -398,7 +391,7 @@ const FacturasCompras = () => {
                 // SetFieldValue('totalDescuentos', totalDescuentos);
                 // SetFieldValue('itbis', itbis);
                 // SetFieldValue('total', total);
-                // console.log('dataRows', dataRows);
+
                 // SetFieldValue('detalle', dataRows);
             }
 
@@ -444,13 +437,13 @@ const FacturasCompras = () => {
                 (accumulator, currentValue) => accumulator + parseFloat(currentValue.descuentos),
                 valorInicial
             );
-            // console.log('totalAplicado', totalAplicado);
+
             // Monto Aplicado
             previewValues.montoAplicado = totalAplicado;
             previewValues.totalDescuentos = totalDescuentos + previewValues.descuentosCB;
             // Monto Pendiente;
             const totalPendiente = previewValues.subTotal - totalAplicado;
-            console.log('totalPendiente', totalPendiente);
+
             previewValues.totalPendiente = totalPendiente;
             SetFieldValue('montoAplicado', totalAplicado);
             SetFieldValue('totalPendiente', totalPendiente);
@@ -504,11 +497,9 @@ const FacturasCompras = () => {
     //     ]
     // });
 
-    console.log('DatosFacturas', facturas);
-
     const handleChangeTab = (event, newValue) => {
         event.defaultPrevented = true;
-        console.log('newValue', newValue);
+
         setValueTab(newValue);
     };
     // const { paginas } = useSelector((state) => state.pagina);
@@ -528,7 +519,6 @@ const FacturasCompras = () => {
 
     const handleChangeValue = (value, row, SetFieldValue, id, type, DatosProducto) => {
         if (type === 'c') {
-            console.log('handleChangeValue', value);
             setDataCB((previewCB) => {
                 previewCB[id] = value;
                 return previewCB;
@@ -543,7 +533,6 @@ const FacturasCompras = () => {
             const datosDeterminacionPrecios = determinacionPrecios.rows
                 .find((result) => result.lista_precio === '63edb3f91c0168b436a1ef60')
                 .detalles.find((dResulto) => {
-                    console.log('Resuldato', dResulto);
                     return (
                         /* eslint no-underscore-dangle: 0 */
                         dResulto.producto._id ===
@@ -560,7 +549,6 @@ const FacturasCompras = () => {
                     porcentajeITBIS += parseFloat(data.tipo_itbis.porcentaje);
                 });
             }
-            console.log('valueItbis', porcentajeITBIS);
 
             // DatosProducto.lista_precio_venta)
             setDataRows((previewRows) => {
@@ -630,11 +618,10 @@ const FacturasCompras = () => {
             SetFieldValue('totalDescuentos', totalDescuentos);
             SetFieldValue('itbis', itbis);
             SetFieldValue('total', total);
-            console.log('dataRows', dataRows);
+
             SetFieldValue('detalle', dataRows);
         }
     };
-    // console.log('dataCB', dataCB);
 
     const addValues = () => {
         setDataRows((previewRows) => {
@@ -706,24 +693,22 @@ const FacturasCompras = () => {
         setValue(newValue);
     };
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/facturaVenta/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/facturaVenta/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/facturaVenta/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/facturaVenta/view/${value}/${generateId()}`);
     };
 
@@ -852,7 +837,7 @@ const FacturasCompras = () => {
                                             `${url}/registro_venta`,
                                             value // .proceso_medio_pago.fill((result) => result.monto > 0)
                                         );
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -871,7 +856,7 @@ const FacturasCompras = () => {
                                             value // .proceso_medio_pago.fill((result) => result.monto > 0)
                                         );
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -889,7 +874,7 @@ const FacturasCompras = () => {
                                         result = await axios.post(`${url}/registro_venta`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/facturaVenta/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -899,7 +884,7 @@ const FacturasCompras = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_venta/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -912,7 +897,7 @@ const FacturasCompras = () => {
                                         result = await axios.put(`${url}/actualizar_venta/${id}`, value);
                                         resetForm();
                                         navegate(`/facturaVenta/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -922,7 +907,7 @@ const FacturasCompras = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_venta`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -932,7 +917,7 @@ const FacturasCompras = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_producto/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -955,13 +940,11 @@ const FacturasCompras = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

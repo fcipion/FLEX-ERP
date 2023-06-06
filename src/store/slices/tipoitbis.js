@@ -44,7 +44,7 @@ export function getTipoitbiss() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipo_itbis`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getTipoitbisById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipo_itbis/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

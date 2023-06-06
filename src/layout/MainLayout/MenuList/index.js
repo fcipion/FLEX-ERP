@@ -56,7 +56,6 @@ const MenuList = () => {
             const { data } = paginas;
             const { Administración } = data;
 
-            console.log('Administración', Administración);
             Administración.pagina.forEach((data) => {
                 if (data.code) {
                     rowsPaginas[rowsPaginas.length] = {
@@ -71,7 +70,6 @@ const MenuList = () => {
             });
 
             setAdmMenu(rowsPaginas);
-            console.log('rowsPaginas', rowsPaginas);
         }
     }, []);
 

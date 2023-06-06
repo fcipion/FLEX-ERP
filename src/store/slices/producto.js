@@ -44,7 +44,7 @@ export function getProductos() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_producto`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getProductoById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_producto/${id}`);
-            // console.log('DataProductos', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

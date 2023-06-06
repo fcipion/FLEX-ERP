@@ -15,7 +15,7 @@ export default function AlertPOP({ prop }) {
     useEffect(() => {
         setOpen(prop.open);
     }, [prop]);
-    console.log('prop', prop);
+
     const handleClick = () => {
         setOpen(true);
     };

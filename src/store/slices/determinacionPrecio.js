@@ -44,7 +44,7 @@ export function getDeterminacionPrecios() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_determinacion_precio`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -64,7 +64,7 @@ export function getDeterminacionPrecioById(id) {
             //     'determinacionPrecioData',
             //     response.data.rows.find((data) => data._id === id)
             // );
-            console.log('listar_determinacion_precio', response.data);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

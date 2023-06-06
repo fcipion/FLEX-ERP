@@ -59,12 +59,9 @@ export default function DropEstado({
         });
     }
 
-    console.log('estadoDocs', estadoDoc);
     const Values = data.find((data) => data.value === Value);
 
     /* eslint no-underscore-dangle: 0 */
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

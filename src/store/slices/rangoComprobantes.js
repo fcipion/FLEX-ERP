@@ -43,7 +43,7 @@ export function getRangoComprobantes() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_rango_comprobante`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -55,7 +55,7 @@ export function getRangoComprobantesById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_rango_comprobante/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

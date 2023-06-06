@@ -46,10 +46,7 @@ export default function DropProductos({ Id, SetFieldValue, Value, SetValue, Labe
         });
     }
 
-    console.log('productos', productos);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Value);
 
     React.useEffect(() => {
         let active = true;

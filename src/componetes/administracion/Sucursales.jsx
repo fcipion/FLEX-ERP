@@ -111,30 +111,27 @@ const Sucursales = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/sucursal/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/sucursal/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/sucursal/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/sucursal/view/${value}/${generateId()}`);
     };
 
     // if (modo === 'edit' && moneda.length !== 0) {
-    //     console.log('moneda', moneda);
-    //     console.log('monedas', monedas);
+
     //     values.compania = moneda.data.compania;
     //     values.simbolo = moneda.data.simbolo;
     //     values.estatus = moneda.data.estatus;
@@ -143,7 +140,6 @@ const Sucursales = () => {
     //     const simbolo = JSON.stringify(DataSimbolo.find((data) => data.value === moneda.data.simbolo));
     //     setValueSimbolo(JSON.parse(simbolo));
 
-    //     console.log('Data Simbolo', JSON.parse(simbolo));
     // }
 
     return modo === 'Index' ? (
@@ -185,7 +181,6 @@ const Sucursales = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -197,7 +192,7 @@ const Sucursales = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_sucursal`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +203,7 @@ const Sucursales = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_sucursal`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +216,7 @@ const Sucursales = () => {
                                         result = await axios.post(`${url}/registro_sucursal`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/sucursal/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +226,7 @@ const Sucursales = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_sucursal/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -244,7 +239,7 @@ const Sucursales = () => {
                                         result = await axios.put(`${url}/actualizar_sucursal/${id}`, value);
                                         resetForm();
                                         navegate(`/sucursal/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -254,7 +249,7 @@ const Sucursales = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_sucursal`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -264,7 +259,7 @@ const Sucursales = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_sucursal/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -287,13 +282,11 @@ const Sucursales = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

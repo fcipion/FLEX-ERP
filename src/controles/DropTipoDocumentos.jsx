@@ -49,8 +49,6 @@ export default function DropTipoDocumentos({ Id, SetFieldValue, Value, SetValue,
 
     const Values = data.find((data) => data.value === Value);
 
-    console.log('Values', Values);
-
     React.useEffect(() => {
         let active = true;
 

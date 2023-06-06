@@ -43,7 +43,7 @@ export function getMoneda() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_monedas`);
-            console.log('dataMoneda', response);
+
             dispatch(slice.actions.getCompaniasSuccess(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

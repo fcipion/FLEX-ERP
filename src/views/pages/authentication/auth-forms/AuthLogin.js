@@ -90,7 +90,6 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                                 // github issue: https://github.com/formium/formik/issues/2430
                             },
                             (err) => {
-                                console.log('Error', err);
                                 setError(err);
                                 setDisplayValue('block');
 
