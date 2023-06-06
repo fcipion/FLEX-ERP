@@ -1,8 +1,5 @@
- 
-
 const data = {
     columns: [
-
         {
             field: 'id',
             headerName: 'Config. Id',
@@ -27,8 +24,7 @@ const data = {
             hide: false,
             size: 'small'
         },
-       
-        
+
         {
             field: 'idcampo',
             headerName: 'Campo ID',
@@ -49,7 +45,7 @@ const data = {
             disableExport: true,
             hide: false,
             size: 'small'
-        },        
+        },
         {
             field: 'texto',
             headerName: 'Nombre a mostrar',
@@ -95,7 +91,7 @@ const data = {
             aggregable: false,
             disableExport: true,
             hide: true
-        }, 
+        },
         {
             field: 'visible',
             headerName: 'Visible?',
@@ -107,7 +103,7 @@ const data = {
             aggregable: false,
             disableExport: true,
             hide: true
-        } 
+        }
     ],
     rows: [
         {
@@ -121,8 +117,8 @@ const data = {
             type: 'Tipo de dato que almacena',
             longitud: 'el tamaño del campo',
             editable: 'Un boolean para saber si el campo es editable o no, colocar true o false',
-            editable: 'Un boolean para saber si el campo es visible o no, colocar true o false',
-        }, 
+            editable: 'Un boolean para saber si el campo es visible o no, colocar true o false'
+        },
         {
             id: 'Id de la config. (02)',
             compania: 'id de la compania',
@@ -134,7 +130,7 @@ const data = {
             type: 'Tipo de dato que almacena',
             longitud: 'el tamaño del campo',
             editable: 'Un boolean para saber si el campo es editable o no, colocar true o false',
-            editable: 'Un boolean para saber si el campo es visible o no, colocar true o false',
+            editable: 'Un boolean para saber si el campo es visible o no, colocar true o false'
         }
     ]
-} 
+};

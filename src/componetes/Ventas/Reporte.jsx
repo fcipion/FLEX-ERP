@@ -1,13 +1,5 @@
 const Reporte = () => {
-
-
-
-    return <>
-
-
-
-
-    </>;
+    return <></>;
 };
 
 export default Reporte;

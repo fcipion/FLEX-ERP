@@ -68,8 +68,8 @@
             "monto": 100,
             "datos_cheque": [
                 {
-                    "banco":"63f8f6da02094cef81faa812",
-                    "numero":"12344556644"
+                    "banco": "63f8f6da02094cef81faa812",
+                    "numero": "12344556644"
                 }
             ]
         }

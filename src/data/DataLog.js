@@ -1,5 +1,3 @@
- 
-
 const data = {
     columns: [
         {
@@ -78,7 +76,7 @@ const data = {
             aggregable: false,
             disableExport: true,
             hide: true
-        } 
+        }
     ],
     rows: [
         {
@@ -106,4 +104,4 @@ const data = {
             estatus: true
         }
     ]
-} 
+};
