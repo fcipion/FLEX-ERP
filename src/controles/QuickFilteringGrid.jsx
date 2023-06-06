@@ -11,9 +11,16 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
     const [pageSize, setPageSize] = useState(10);
     // Otherwise filter will be applied on fields such as the hidden column id
     // const columns = React.useMemo(() => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)), [data.columns]);
+    if (!data || !data.rows || !data.columns) {
+        data = {
+            rows: [],
+            columns: []
+        };
+    }
+
     const resultado = {
         columns: data.columns,
-        rows: data.rows.filter((result) => result.estatus === true)
+        rows: data.rows.filter(({ estatus }) => estatus === true)
     };
 
     const actions = {
