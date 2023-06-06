@@ -41,7 +41,6 @@ export default function DropTipoComprobantes({ Id, SetFieldValue, Value, SetValu
         dispatch(getTComprobantes());
     }, [dispatch]);
 
-    console.log('tComprobantes', tComprobantes);
     React.useEffect(() => {
         if (tComprobantes.rows) {
             tComprobantes.rows.forEach((result, index) => {
@@ -52,8 +51,6 @@ export default function DropTipoComprobantes({ Id, SetFieldValue, Value, SetValu
     });
 
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

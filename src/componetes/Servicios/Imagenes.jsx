@@ -99,7 +99,6 @@ export default function Imagenes({
     const HandleValueChange = (event, valueField) => {
         const { id } = event.target;
 
-        console.log('valueField', id);
         document.getElementById([id]).value = formatter.format(valueField);
     };
 

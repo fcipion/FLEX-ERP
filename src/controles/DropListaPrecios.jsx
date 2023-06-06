@@ -56,8 +56,6 @@ export default function DropListaPrecios({ Id, SetFieldValue, Value, SetValue, L
 
     const Values = data.find((data) => data.value === Value);
 
-    console.log('Values', Values);
-
     React.useEffect(() => {
         let active = true;
 
@@ -153,14 +151,13 @@ export default function DropListaPrecios({ Id, SetFieldValue, Value, SetValue, L
                     loading={loading}
                     fullWidth
                     onChange={(event, value) => {
-                        console.log('ListaPrecios', value);
                         let datosDeterminacion;
                         const resultadoDatosDeterminacion = {};
                         // if (value.value) {
                         //     if (determinacionPrecios.rows) {
                         //         /* eslint no-underscore-dangle: 0 */
                         //         datosDeterminacion = determinacionPrecios.rows.find((result) => result.lista_precio === value.value);
-                        //         console.log('datosDeterminacion', datosDeterminacion);
+
                         //         if (datosDeterminacion) {
                         //             resultadoDatosDeterminacion = datosDeterminacion.detalles.find(
                         //                 /* eslint no-underscore-dangle: 0 */

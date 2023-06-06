@@ -29,7 +29,7 @@ const verifyToken = (serviceToken) => {
     }
     const decoded = jwtDecode(serviceToken);
     localStorage.setItem('userData', JSON.stringify(decoded));
-    console.log('decoded', decoded);
+
     /**
      * Property 'exp' does not exist on type '<T = unknown>(token, options?: JwtDecodeOptions | undefined) => T'.
      */
@@ -60,7 +60,7 @@ export const JWTProvider = ({ children }) => {
                 if (serviceToken && verifyToken(serviceToken)) {
                     setSession(serviceToken);
                     const response = await axios.get(`${url}/listar_usuario/${decoded.sub}`, { token: serviceToken });
-                    // console.log('response user', response);
+
                     const { user } = response.data;
                     dispatch({
                         type: LOGIN,

@@ -82,7 +82,6 @@ const Doctores = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('doctor', doctor);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -119,28 +118,25 @@ const Doctores = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/doctor/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/doctor/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/doctor/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/doctor/view/${value}/${generateId()}`);
     };
 
-    console.log('error', error);
     return modo === 'Index' ? (
         <>
             {doctors.length !== 0 ? (
@@ -189,7 +185,6 @@ const Doctores = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -200,9 +195,8 @@ const Doctores = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Create', value);
                                         result = await axios.post(`${url}/registro_doctor`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -213,7 +207,7 @@ const Doctores = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_doctor`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -225,7 +219,7 @@ const Doctores = () => {
                                         result = await axios.post(`${url}/registro_doctor`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/doctor/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -235,7 +229,7 @@ const Doctores = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_doctor/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -248,7 +242,7 @@ const Doctores = () => {
                                         result = await axios.put(`${url}/actualizar_doctor/${id}`, value);
                                         resetForm();
                                         navegate(`/doctor/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -258,7 +252,7 @@ const Doctores = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_doctor`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -268,7 +262,7 @@ const Doctores = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_doctor/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -291,15 +285,11 @@ const Doctores = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.doctor = userData.doctor;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
-
-                        console.log('valuesFor', errors);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

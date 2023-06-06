@@ -49,8 +49,6 @@ export default function DropSucursal({ Id, SetFieldValue, Value, SetValue, Label
 
     const Values = data.find((data) => data.value === Value);
 
-    console.log('Values', Values);
-
     React.useEffect(() => {
         let active = true;
 

@@ -46,10 +46,7 @@ export default function DropMonedas({ Id, SetFieldValue, Value, SetValue, Label,
         });
     }
 
-    console.log('monedas', monedas);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

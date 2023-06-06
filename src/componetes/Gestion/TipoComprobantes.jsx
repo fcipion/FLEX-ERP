@@ -106,24 +106,22 @@ const TipoComprobantes = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/tipoComprobante/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/tipoComprobante/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tipoComprobante/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tipoComprobante/view/${value}/${generateId()}`);
     };
 
@@ -162,7 +160,6 @@ const TipoComprobantes = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -174,7 +171,7 @@ const TipoComprobantes = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_tipo_comprobante`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -185,7 +182,7 @@ const TipoComprobantes = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_tipo_comprobante`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +195,7 @@ const TipoComprobantes = () => {
                                         result = await axios.post(`${url}/registro_tipo_comprobante`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/tipoComprobante/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +205,7 @@ const TipoComprobantes = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_tipo_comprobante/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +218,7 @@ const TipoComprobantes = () => {
                                         result = await axios.put(`${url}/actualizar_tipo_comprobante/${id}`, value);
                                         resetForm();
                                         navegate(`/tipoComprobante/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +228,7 @@ const TipoComprobantes = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_tipo_comprobante`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +238,7 @@ const TipoComprobantes = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_tipo_comprobante/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',

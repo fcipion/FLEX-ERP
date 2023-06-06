@@ -50,8 +50,6 @@ export default function DropTerminoPago({ Id, SetFieldValue, Value, SetValue, La
 
     const Values = data.find((data) => data.value === Value);
 
-    console.log('Values', Values);
-
     React.useEffect(() => {
         let active = true;
 

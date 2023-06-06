@@ -57,7 +57,7 @@ const CondicionesPagos = () => {
     const navegate = useNavigate();
     const { condicionesPagos, condicionesPago, error } = useSelector((state) => state.condicionesPago);
     // const { paginas } = useSelector((state) => state.pagina);
-    console.log('condicionesPago', condicionesPago);
+
     React.useEffect(() => {
         dispatch(getCondicionesPagos());
     }, [dispatch]);
@@ -106,24 +106,22 @@ const CondicionesPagos = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/condicionesPago/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/condicionesPago/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/condicionesPago/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/condicionesPago/view/${value}/${generateId()}`);
     };
 
@@ -162,7 +160,6 @@ const CondicionesPagos = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -174,7 +171,7 @@ const CondicionesPagos = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_condiciones_pago`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -185,7 +182,7 @@ const CondicionesPagos = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_condiciones_pago`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +195,7 @@ const CondicionesPagos = () => {
                                         result = await axios.post(`${url}/registro_condiciones_pago`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/condicionesPago/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +205,7 @@ const CondicionesPagos = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_condiciones_pago/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +218,7 @@ const CondicionesPagos = () => {
                                         result = await axios.put(`${url}/actualizar_condiciones_pago/${id}`, value);
                                         resetForm();
                                         navegate(`/condicionesPago/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +228,7 @@ const CondicionesPagos = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_condiciones_pago`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +238,7 @@ const CondicionesPagos = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_condiciones_pago/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -264,13 +261,11 @@ const CondicionesPagos = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

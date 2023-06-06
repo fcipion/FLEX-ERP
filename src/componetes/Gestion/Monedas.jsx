@@ -132,30 +132,27 @@ const Monedas = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/moneda/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/moneda/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/moneda/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/moneda/view/${value}/${generateId()}`);
     };
 
     // if (modo === 'edit' && moneda.length !== 0) {
-    //     console.log('moneda', moneda);
-    //     console.log('monedas', monedas);
+
     //     values.compania = moneda.data.compania;
     //     values.simbolo = moneda.data.simbolo;
     //     values.estatus = moneda.data.estatus;
@@ -164,7 +161,6 @@ const Monedas = () => {
     //     const simbolo = JSON.stringify(DataSimbolo.find((data) => data.value === moneda.data.simbolo));
     //     setValueSimbolo(JSON.parse(simbolo));
 
-    //     console.log('Data Simbolo', JSON.parse(simbolo));
     // }
 
     return modo === 'Index' ? (
@@ -203,7 +199,6 @@ const Monedas = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -215,7 +210,7 @@ const Monedas = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_moneda`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la moneda: ${result.data.data.descripcion}` });
                                         }
@@ -223,7 +218,7 @@ const Monedas = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_moneda`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la moneda: ${result.data.data.descripcion}` });
                                         }
@@ -232,14 +227,14 @@ const Monedas = () => {
                                         result = await axios.post(`${url}/registro_moneda`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/moneda/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la moneda: ${result.data.data.descripcion}` });
                                         }
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_moneda/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -252,7 +247,7 @@ const Monedas = () => {
                                         result = await axios.put(`${url}/actualizar_moneda/${id}`, value);
                                         resetForm();
                                         navegate(`/moneda/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -262,7 +257,7 @@ const Monedas = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_moneda`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -272,7 +267,7 @@ const Monedas = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_moneda/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'warning', title: `Moneda eliminada: ${result.data.data.descripcion}` });
                                         }
@@ -292,13 +287,11 @@ const Monedas = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

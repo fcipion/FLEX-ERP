@@ -106,24 +106,22 @@ const TipoCP = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/claseReprComerciale/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/claseReprComerciale/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/claseReprComerciale/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/claseReprComerciale/view/${value}/${generateId()}`);
     };
 
@@ -162,7 +160,6 @@ const TipoCP = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -174,7 +171,7 @@ const TipoCP = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_tipo_cliente`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -185,7 +182,7 @@ const TipoCP = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_tipo_cliente`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +195,7 @@ const TipoCP = () => {
                                         result = await axios.post(`${url}/registro_tipo_cliente`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/claseReprComerciale/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -208,7 +205,7 @@ const TipoCP = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_tipo_cliente/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +218,7 @@ const TipoCP = () => {
                                         result = await axios.put(`${url}/actualizar_tipo_cliente/${id}`, value);
                                         resetForm();
                                         navegate(`/claseReprComerciale/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -231,7 +228,7 @@ const TipoCP = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_tipo_cliente`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +238,7 @@ const TipoCP = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_tipo_cliente/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -267,13 +264,11 @@ const TipoCP = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

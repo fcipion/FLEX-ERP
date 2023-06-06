@@ -15,7 +15,7 @@ function getNextValue(array, currentValue, type) {
         return 0;
     }
     /* eslint no-underscore-dangle: 0 */
-    console.log('_ID', array[currentIndex + 1]._id);
+
     /* eslint no-underscore-dangle: 0 */
     if (type === '+') return array[currentIndex + 1]._id;
 

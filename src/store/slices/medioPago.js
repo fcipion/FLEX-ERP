@@ -44,7 +44,7 @@ export function getMedioPago() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_medio_pago`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getMedioPagoById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_medio_pago/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

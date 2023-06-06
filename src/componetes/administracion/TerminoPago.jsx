@@ -59,7 +59,7 @@ const TerminoPago = () => {
     const navegate = useNavigate();
     const { terminoPagos, terminoPago, error } = useSelector((state) => state.terminoPago);
     // const { paginas } = useSelector((state) => state.pagina);
-    console.log('terminoPago', terminoPago);
+
     React.useEffect(() => {
         dispatch(getTerminoPagos());
     }, [dispatch]);
@@ -108,24 +108,22 @@ const TerminoPago = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/terminoPago/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/terminoPago/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/terminoPago/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/terminoPago/view/${value}/${generateId()}`);
     };
 
@@ -165,7 +163,6 @@ const TerminoPago = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -177,7 +174,7 @@ const TerminoPago = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_termino_pago`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -188,7 +185,7 @@ const TerminoPago = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_termino_pago`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -201,7 +198,7 @@ const TerminoPago = () => {
                                         result = await axios.post(`${url}/registro_termino_pago`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/terminoPago/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -211,7 +208,7 @@ const TerminoPago = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_termino_pago/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -224,7 +221,7 @@ const TerminoPago = () => {
                                         result = await axios.put(`${url}/actualizar_termino_pago/${id}`, value);
                                         resetForm();
                                         navegate(`/terminoPago/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -234,7 +231,7 @@ const TerminoPago = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_termino_pago`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -244,7 +241,7 @@ const TerminoPago = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_termino_pago/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -267,13 +264,11 @@ const TerminoPago = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

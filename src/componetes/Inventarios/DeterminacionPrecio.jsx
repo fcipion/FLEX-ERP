@@ -104,7 +104,6 @@ const DeterminacionPrecio = () => {
         dispatch(getDeterminacionPrecioById(id));
     }, [id, accion, modo]);
 
-    console.log('determinacionPrecio', determinacionPrecio);
     React.useEffect(() => {
         dispatch(getProductoById(id));
     }, [dispatch]);
@@ -152,8 +151,6 @@ const DeterminacionPrecio = () => {
         }
     }, [determinacionPrecio, modo]);
 
-    console.log('determinacionPrecio', determinacionPrecio);
-
     React.useEffect(() => {
         dispatch(getProductos());
     }, [id, accion, modo]);
@@ -198,24 +195,22 @@ const DeterminacionPrecio = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/determinacionPrecio/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/determinacionPrecio/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/determinacionPrecio/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/determinacionPrecio/view/${value}/${generateId()}`);
     };
 
@@ -249,7 +244,6 @@ const DeterminacionPrecio = () => {
         }
     };
 
-    // console.log('determinacionPrecioValue', determinacionPrecio);
     return modo === 'Index' ? (
         <>
             {console.log('determinacionPrecios', determinacionPrecios)}
@@ -289,7 +283,6 @@ const DeterminacionPrecio = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', value);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -301,7 +294,7 @@ const DeterminacionPrecio = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_determinacion_precio`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -312,7 +305,7 @@ const DeterminacionPrecio = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_determinacion_precio`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -325,7 +318,7 @@ const DeterminacionPrecio = () => {
                                         result = await axios.post(`${url}/registro_determinacion_precio`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/determinacionPrecio/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -335,7 +328,7 @@ const DeterminacionPrecio = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_determinacionPrecio/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -348,7 +341,7 @@ const DeterminacionPrecio = () => {
                                         result = await axios.put(`${url}/actualizar_determinacion_precio/${id}`, value);
                                         resetForm();
                                         navegate(`/determinacionPrecio/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -358,7 +351,7 @@ const DeterminacionPrecio = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/actualizar_determinacion_precio`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -368,7 +361,7 @@ const DeterminacionPrecio = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_determinacion_precio/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -391,13 +384,11 @@ const DeterminacionPrecio = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

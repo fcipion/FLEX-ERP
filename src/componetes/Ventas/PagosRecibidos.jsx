@@ -128,7 +128,6 @@ const formatter = new Intl.NumberFormat('en-US', {
 const HandleValueChange = (event, valueField) => {
     const { id } = event.target;
 
-    console.log('id', event);
     document.getElementById([id]).value = formatter.format(valueField[id]);
 };
 
@@ -147,8 +146,6 @@ const PagosRecibidos = ({
     setFacturas,
     HandlerChangeValues
 }) => {
-    console.log('DataCB', DataCB);
-
     const [value, setValue] = React.useState('2014-08-18T21:11:54');
     const [valueEstatus, setValueEstatus] = React.useState({ label: 'Activo', value: true });
     const [valueSucursal, setValueSucursal] = React.useState({});
@@ -267,7 +264,7 @@ const PagosRecibidos = ({
 
     const handleChangeTab = (event, newValue) => {
         event.defaultPrevented = true;
-        console.log('newValue', newValue);
+
         setValueTab(newValue);
     };
     // const { paginas } = useSelector((state) => state.pagina);
@@ -305,24 +302,22 @@ const PagosRecibidos = ({
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/facturaVenta/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/facturaVenta/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/facturaVenta/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/facturaVenta/view/${value}/${generateId()}`);
     };
 
@@ -331,7 +326,6 @@ const PagosRecibidos = ({
     // };
 
     const camposRequeridos = (values) => {
-        console.log('Documento', JSON.stringify(values));
         setCamposRequerdio((previewValue) => {
             previewValue.descripcion = '';
             return previewValue;

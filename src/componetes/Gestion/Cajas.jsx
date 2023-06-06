@@ -73,8 +73,6 @@ const Cajas = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    // console.log('rol', rol);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -111,24 +109,22 @@ const Cajas = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/caja/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/caja/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/caja/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/caja/view/${value}/${generateId()}`);
     };
 
@@ -168,7 +164,6 @@ const Cajas = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -180,7 +175,7 @@ const Cajas = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_caja`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la caja: ${result.data.data.descripcion}` });
                                         }
@@ -188,7 +183,7 @@ const Cajas = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_caja`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la caja: ${result.data.data.descripcion}` });
                                         }
@@ -198,14 +193,14 @@ const Cajas = () => {
                                         result = await axios.post(`${url}/registro_caja`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/caja/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la caja: ${result.data.data.descripcion}` });
                                         }
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_caja/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -218,7 +213,7 @@ const Cajas = () => {
                                         result = await axios.put(`${url}/actualizar_caja/${id}`, value);
                                         resetForm();
                                         navegate(`/caja/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -228,7 +223,7 @@ const Cajas = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_caja`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -238,7 +233,7 @@ const Cajas = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_caja/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'warning', title: `caja eliminada: ${result.data.data.descripcion}` });
                                         }
@@ -258,13 +253,11 @@ const Cajas = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

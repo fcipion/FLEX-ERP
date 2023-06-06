@@ -113,24 +113,22 @@ const TasaCambios = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/tasaCambio/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/tasaCambio/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tasaCambio/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/tasaCambio/view/${value}/${generateId()}`);
     };
 
@@ -174,7 +172,6 @@ const TasaCambios = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -186,8 +183,7 @@ const TasaCambios = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_tasa_cambio`, value);
-                                        console.log('value', value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +194,7 @@ const TasaCambios = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_tasa_cambio`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -211,7 +207,7 @@ const TasaCambios = () => {
                                         result = await axios.post(`${url}/registro_tasa_cambio`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/tasaCambio/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +217,7 @@ const TasaCambios = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_tasa_cambio/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -234,7 +230,7 @@ const TasaCambios = () => {
                                         result = await axios.put(`${url}/actualizar_tasa_cambio/${id}`, value);
                                         resetForm();
                                         navegate(`/tasaCambio/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -244,7 +240,7 @@ const TasaCambios = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_tasa_cambio`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -254,7 +250,7 @@ const TasaCambios = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_tasa_cambio/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -277,13 +273,11 @@ const TasaCambios = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

@@ -116,7 +116,6 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
     };
 
     const columnsData = [id, nombre, ...columns, estatus, actions];
-    // console.log('columns', columns[1].flex);
 
     return (
         <Box

@@ -107,24 +107,22 @@ const EstadoDoc = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/estadoDoc/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/estadoDoc/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/estadoDoc/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/estadoDoc/view/${value}/${generateId()}`);
     };
 
@@ -164,7 +162,6 @@ const EstadoDoc = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -176,7 +173,7 @@ const EstadoDoc = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_estado`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -187,7 +184,7 @@ const EstadoDoc = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_estado`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -200,7 +197,7 @@ const EstadoDoc = () => {
                                         result = await axios.post(`${url}/registro_estado`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/estadoDoc/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -210,7 +207,7 @@ const EstadoDoc = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_estado/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -223,7 +220,7 @@ const EstadoDoc = () => {
                                         result = await axios.put(`${url}/actualizar_estado/${id}`, value);
                                         resetForm();
                                         navegate(`/estadoDoc/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -233,7 +230,7 @@ const EstadoDoc = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_estado`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -243,7 +240,7 @@ const EstadoDoc = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_estado/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -269,13 +266,11 @@ const EstadoDoc = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

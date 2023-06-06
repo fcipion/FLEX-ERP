@@ -95,7 +95,6 @@ const Compania = () => {
 
     const formData = new FormData();
 
-    console.log('compania', compania);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -132,30 +131,27 @@ const Compania = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/compania/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/compania/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/compania/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/compania/view/${value}/${generateId()}`);
     };
 
     // if (modo === 'edit' && moneda.length !== 0) {
-    //     console.log('moneda', moneda);
-    //     console.log('monedas', monedas);
+
     //     values.compania = moneda.data.compania;
     //     values.simbolo = moneda.data.simbolo;
     //     values.estatus = moneda.data.estatus;
@@ -164,7 +160,6 @@ const Compania = () => {
     //     const simbolo = JSON.stringify(DataSimbolo.find((data) => data.value === moneda.data.simbolo));
     //     setValueSimbolo(JSON.parse(simbolo));
 
-    //     console.log('Data Simbolo', JSON.parse(simbolo));
     // }
 
     // if (error !== null) {
@@ -172,16 +167,15 @@ const Compania = () => {
     // }
 
     // const handleFileInputChange => ()(event) {
-    //     console.log('FileName');
+
     //     const file = event.target.files[0];
     //     setFile(file);
     // }
     const handleFileInputChange = (event) => {
-        console.log('FileName');
         const file = event.target.files[0];
         setFile(file);
     };
-    console.log('error', error);
+
     return modo === 'Index' ? (
         <>
             {companias.length !== 0 ? (
@@ -233,7 +227,6 @@ const Compania = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -244,7 +237,6 @@ const Compania = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Imagen', 'Create');
                                         formData.append('nombre', value.nombre);
                                         formData.append('rnc', value.rnc);
                                         formData.append('direccion', value.direccion);
@@ -265,7 +257,7 @@ const Compania = () => {
                                         }
 
                                         result = await axios.post(`${url}/registro_compania`, formData);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -276,7 +268,7 @@ const Compania = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_compania`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -288,7 +280,7 @@ const Compania = () => {
                                         result = await axios.post(`${url}/registro_compania`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/compania/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -298,7 +290,7 @@ const Compania = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_compania/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -308,11 +300,10 @@ const Compania = () => {
                                         break;
 
                                     case 'Editar nuevo':
-                                        console.log('result', result);
                                         result = await axios.put(`${url}/actualizar_compania/${id}`, value);
                                         resetForm();
                                         navegate(`/compania/create/0/${generateId()}`);
-                                        // console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -321,7 +312,6 @@ const Compania = () => {
                                         }
                                         break;
                                     case 'Copiar':
-                                        console.log('Imagen', 'Create');
                                         formData.append('nombre', value.nombre);
                                         formData.append('descripcion', value.nombre);
                                         formData.append('rnc', value.rnc);
@@ -343,7 +333,7 @@ const Compania = () => {
                                         }
 
                                         result = await axios.post(`${url}/registro_compania`, formData);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -353,7 +343,7 @@ const Compania = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_moneda/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -376,15 +366,11 @@ const Compania = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
-
-                        console.log('valuesFor', errors);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);
@@ -682,9 +668,6 @@ const Compania = () => {
                                                             error={errors.fecha_establecida && touched.fecha_establecida}
                                                             helperText={touched.fecha_establecida && errors.fecha_establecida}
                                                             onChange={(value) => {
-                                                                // console.log('event', value);
-                                                                // console.log('value', value);
-
                                                                 // setValue(value);
                                                                 setFieldValue('fecha_establecida', value);
                                                             }}

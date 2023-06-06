@@ -44,7 +44,7 @@ export function getListaPrecios() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_lista_precio`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getListaPreciosById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_lista_precio/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

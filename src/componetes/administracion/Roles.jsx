@@ -69,8 +69,6 @@ const Roles = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('rol', rol);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -107,24 +105,22 @@ const Roles = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/rol/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/rol/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/rol/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/rol/view/${value}/${generateId()}`);
     };
 
@@ -163,7 +159,6 @@ const Roles = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -175,7 +170,7 @@ const Roles = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_rol`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la rol: ${result.data.data.descripcion}` });
                                         }
@@ -183,7 +178,7 @@ const Roles = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_rol`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la rol: ${result.data.data.descripcion}` });
                                         }
@@ -193,14 +188,14 @@ const Roles = () => {
                                         result = await axios.post(`${url}/registro_rol`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/rol/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'success', title: `Creada la rol: ${result.data.data.descripcion}` });
                                         }
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_rol/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -213,7 +208,7 @@ const Roles = () => {
                                         result = await axios.put(`${url}/actualizar_rol/${id}`, value);
                                         resetForm();
                                         navegate(`/rol/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -223,7 +218,7 @@ const Roles = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_rol`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -233,7 +228,7 @@ const Roles = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_rol/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({ type: 'warning', title: `rol eliminada: ${result.data.data.descripcion}` });
                                         }
@@ -253,13 +248,11 @@ const Roles = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

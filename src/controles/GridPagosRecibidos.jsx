@@ -116,7 +116,6 @@ export default function GridPagosRecibidos({
     const HandlerChangeValues = (field, value, proceso, row, SetFieldValue, idProducto, id) => {
         // const DatosProducto = productos.rows.find((result) => result._id === idProducto);
 
-        console.log('datos Medio pago');
         SetFacturas((previewValues) => {
             // Retornar valores de la cabecera de la facturas
             // Agregar datos de la cabecera de la factura;
@@ -132,14 +131,13 @@ export default function GridPagosRecibidos({
             //     // Extrar el index de la linea de la factura;
             //     // debugger;
 
-            //     console.log('determinacionPrecios', determinacionPrecios);
             //     const indexRow = Facturas.detalles.findIndex((dataRow) => dataRow.line_id === row.line_id);
 
             //     // Determinación de precios; Se recorre el arreglo de determinacion de precios, para idicar el precio del ariticulo;
             //     const datosDeterminacionPrecios = determinacionPrecios.rows
             //         .find((result) => result.lista_precio._id === DatosProducto.lista_precio_venta._id)
             //         .detalles.find((dResulto) => {
-            //             console.log('Resuldato', dResulto);
+
             //             return (
             //                 /* eslint no-underscore-dangle: 0 */
             //                 dResulto.producto._id ===
@@ -156,7 +154,6 @@ export default function GridPagosRecibidos({
             //             porcentajeITBIS += parseFloat(data.tipo_itbis.porcentaje);
             //         });
             //     }
-            //     console.log('valueItbis', porcentajeITBIS);
 
             //     // DatosProducto.lista_precio_venta)
             //     SetFacturas((previewRows) => {
@@ -279,13 +276,13 @@ export default function GridPagosRecibidos({
                 (accumulator, currentValue) => accumulator + parseFloat(currentValue.descuentos),
                 valorInicial
             );
-            // console.log('totalAplicado', totalAplicado);
+
             // Monto Aplicado
             previewValues.montoAplicado = totalAplicado;
             previewValues.totalDescuentos = totalDescuentos + previewValues.descuentosCB;
             // Monto Pendiente;
             const totalPendiente = previewValues.subtotal - totalAplicado;
-            console.log('totalPendiente', totalPendiente);
+
             previewValues.totalPendiente = totalPendiente;
             // SetFieldValue('montoAplicado', totalAplicado);
             // SetFieldValue('totalPendiente', totalPendiente);
@@ -303,7 +300,6 @@ export default function GridPagosRecibidos({
     const HandleValueChange = (event, valueField) => {
         const { id } = event.target;
 
-        console.log('valueField', id);
         document.getElementById([id]).value = formatter.format(valueField);
     };
 
