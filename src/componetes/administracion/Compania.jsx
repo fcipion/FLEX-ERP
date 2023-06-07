@@ -212,7 +212,7 @@ const Compania = () => {
                         vision: compania.data ? compania.data.vision : '',
                         valores: compania.data ? compania.data.valores : '',
                         estatus: compania.data ? compania.data.estatus : true,
-                        fecha_establecida: compania.data ? compania.data.fecha_establecida : '',
+                        fecha_establecida: compania.data ? new Date(compania.data.fecha_establecida) : new Date(),
                         logo: compania.data ? compania.data.logo : '',
                         sitio_web: compania.data ? compania.data.sitio_web : '',
                         moneda_curso: compania.data ? compania.data.moneda_curso : '',
