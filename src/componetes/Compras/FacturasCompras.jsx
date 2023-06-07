@@ -286,14 +286,13 @@ const FacturasCompras = () => {
                 // Determinación de precios; Se recorre el arreglo de determinacion de precios, para idicar el precio del ariticulo;
                 const datosDeterminacionPrecios = determinacionPrecios.rows
                     .find((result) => result.lista_precio === '63edb3f91c0168b436a1ef60')
-                    .detalles.find((dResulto) => {
-                        return (
+                    .detalles.find(
+                        (dResulto) =>
                             /* eslint no-underscore-dangle: 0 */
                             dResulto.producto._id ===
                                 /* eslint no-underscore-dangle: 0 */
                                 DatosProducto._id && dResulto.unidad_medida._id === DatosProducto.unidad_medida_venta._id
-                        );
-                    }); // DatosProducto.lista_precio_venta)
+                    ); // DatosProducto.lista_precio_venta)
 
                 // Determinación de ITBIS; determinar el ITBIS que tiene asignado el articulo.
                 let porcentajeITBIS = 0;
@@ -532,14 +531,13 @@ const FacturasCompras = () => {
             // Determinación de precios;
             const datosDeterminacionPrecios = determinacionPrecios.rows
                 .find((result) => result.lista_precio === '63edb3f91c0168b436a1ef60')
-                .detalles.find((dResulto) => {
-                    return (
+                .detalles.find(
+                    (dResulto) =>
                         /* eslint no-underscore-dangle: 0 */
                         dResulto.producto._id ===
                             /* eslint no-underscore-dangle: 0 */
                             DatosProducto._id && dResulto.unidad_medida._id === DatosProducto.unidad_medida_venta._id
-                    );
-                }); // DatosProducto.lista_precio_venta)
+                ); // DatosProducto.lista_precio_venta)
 
             // Determinación de ITBIS;
             let porcentajeITBIS = 0;
