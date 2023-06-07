@@ -39,7 +39,8 @@ export default function Dropcliente({
     OnBlur,
     Onchange,
     SetDatosCliente,
-    required
+    required,
+    propsAutoComplete
 }) {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [scroll, setScroll] = React.useState('paper');
@@ -154,6 +155,7 @@ export default function Dropcliente({
                     value={Values ? { title: Values.title, value: Values.value } : { title: '', value: '' }}
                     getOptionLabel={(option) => option.title}
                     options={options}
+                    {...propsAutoComplete}
                     loading={loading}
                     fullWidth
                     size="small"

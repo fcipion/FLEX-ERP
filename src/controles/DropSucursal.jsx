@@ -28,7 +28,19 @@ function sleep(delay = 0) {
     });
 }
 
-export default function DropSucursal({ Id, SetFieldValue, Value, SetValue, Label, Errors, Touched, OnBlur, Onchange, required }) {
+export default function DropSucursal({
+    Id,
+    SetFieldValue,
+    Value,
+    SetValue,
+    Label,
+    Errors,
+    Touched,
+    OnBlur,
+    Onchange,
+    required,
+    propsAutoComplete
+}) {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [scroll, setScroll] = React.useState('paper');
     const [open, setOpen] = React.useState(false);
@@ -140,6 +152,7 @@ export default function DropSucursal({ Id, SetFieldValue, Value, SetValue, Label
                     value={Values ? { title: Values.title, value: Values.value } : { title: '', value: '' }}
                     getOptionLabel={(option) => option.title}
                     options={options}
+                    {...propsAutoComplete}
                     loading={loading}
                     size="small"
                     fullWidth

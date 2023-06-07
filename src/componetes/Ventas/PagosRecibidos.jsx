@@ -398,7 +398,6 @@ const PagosRecibidos = ({
                                             <Dropcliente
                                                 HandleBlur={handleBlur}
                                                 Errors={errors}
-                                                disabled
                                                 Touched={touched}
                                                 Id="cliente"
                                                 SetFieldValue={setFieldValue}
@@ -408,6 +407,7 @@ const PagosRecibidos = ({
                                                     handleChangeValue(value, '', '', 'cliente', 'p');
                                                 }}
                                                 SetDatosCliente={SetDatosCliente}
+                                                propsAutoComplete={{ disabled: true }}
                                             />
                                         </Item>
                                     </Grid>
@@ -424,6 +424,7 @@ const PagosRecibidos = ({
                                                 Onchange={(value) => {
                                                     handleChangeValue(value, '', '', 'sucursal', 'p');
                                                 }}
+                                                propsAutoComplete={{ disabled: true }}
                                             />
                                         </Item>
                                     </Grid>
@@ -443,6 +444,7 @@ const PagosRecibidos = ({
                                                         handleChangeValue(value, '', '', 'fecha_contabilizacion', 'p');
                                                     }}
                                                     renderInput={(params) => <TextField size="small" fullWidth {...params} />}
+                                                    disabled
                                                 />
                                             </LocalizationProvider>
                                         </Item>
@@ -462,6 +464,7 @@ const PagosRecibidos = ({
                                                         handleChangeValue(value, '', '', 'fecha_vencimiento', 'p');
                                                     }}
                                                     renderInput={(params) => <TextField size="small" fullWidth {...params} />}
+                                                    disabled
                                                 />
                                             </LocalizationProvider>
                                         </Item>
