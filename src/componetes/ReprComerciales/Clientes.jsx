@@ -377,15 +377,14 @@ const Clientes = () => {
                                             >
                                                 <Grid item xs={12}>
                                                     <TextField
-                                                        value={values.nombre}
-                                                        id="nombre"
-                                                        name="nombre"
+                                                        value={values.documento}
+                                                        id="documento"
+                                                        label="RNC/Cedula"
                                                         fullWidth
-                                                        label="Nombre"
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.nombre && touched.nombre}
-                                                        helperText={touched.nombre && errors.nombre}
+                                                        error={errors.documento && touched.documento}
+                                                        helperText={touched.documento && errors.documento}
                                                         renderInput={(params) => <TextField {...params} />}
                                                     />
                                                 </Grid>
@@ -405,14 +404,15 @@ const Clientes = () => {
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
-                                                        value={values.documento}
-                                                        id="documento"
-                                                        label="RNC/Cedula"
+                                                        value={values.nombre}
+                                                        id="nombre"
+                                                        name="nombre"
                                                         fullWidth
+                                                        label="Nombre"
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.documento && touched.documento}
-                                                        helperText={touched.documento && errors.documento}
+                                                        error={errors.nombre && touched.nombre}
+                                                        helperText={touched.nombre && errors.nombre}
                                                         renderInput={(params) => <TextField {...params} />}
                                                     />
                                                 </Grid>
