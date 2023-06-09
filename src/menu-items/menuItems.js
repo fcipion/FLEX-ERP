@@ -371,7 +371,7 @@ const MenuItems = {
                     id: 'ordenServicio',
                     title: <FormattedMessage id="Orden de servicios" />,
                     type: 'item',
-                    url: `/ordenServicio/Index/0/${generateId()}`,
+                    url: `/ordenServicio`,
                     icon: icons.ReceiptLongIcon,
                     target: false
                 }

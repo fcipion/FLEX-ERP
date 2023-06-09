@@ -128,7 +128,7 @@ const MainRoutes = {
 
         // Servicios
         {
-            path: '/ordenServicio/:modo/:id/:accion',
+            path: '/ordenServicio',
             element: <OrdenServicios />
         },
 
