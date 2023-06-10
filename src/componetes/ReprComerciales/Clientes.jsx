@@ -46,7 +46,9 @@ const formSchema = Yup.object().shape({
     nombre: Yup.string().required('Requerido'),
     vendedor: Yup.string().required('Requerido'),
     tipo_documento: Yup.string().required('Requerido'),
-    documento: Yup.string().required('Requerido'),
+    documento: Yup.string()
+        .matches(/^\d{3}-\d{7}-\d{1}$/, 'Cédula incorrecta. Asegúrate de introducir todos los dígitos.')
+        .required('Requerido'),
     pagina_web: Yup.string().required('Requerido'),
     whatsapp: Yup.string().required('Requerido'),
     email: Yup.string().email('Invalid email').required('Requerido'),
@@ -304,8 +306,8 @@ const Clientes = () => {
                             setOpenConfDlg(true);
                         };
 
-                        const handlerCreate = (value) => {
-                            setModoAccion(value);
+                        const handlerCreate = () => {
+                            setModoAccion('Crear nuevo');
                             handleSubmit();
                         };
                         const handlerPrint = () => {
@@ -376,17 +378,19 @@ const Clientes = () => {
                                                 }}
                                             >
                                                 <Grid item xs={12}>
-                                                    <TextField
-                                                        value={values.nombre}
-                                                        id="nombre"
-                                                        name="nombre"
+                                                    <PatternFormat
+                                                        value={values.documento}
+                                                        id="documento"
+                                                        label="RNC/Cedula"
                                                         fullWidth
-                                                        label="Nombre"
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.nombre && touched.nombre}
-                                                        helperText={touched.nombre && errors.nombre}
+                                                        error={errors.documento && touched.documento}
+                                                        helperText={touched.documento && errors.documento}
                                                         renderInput={(params) => <TextField {...params} />}
+                                                        format="###-#######-#"
+                                                        mask="_"
+                                                        customInput={TextField}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -405,14 +409,15 @@ const Clientes = () => {
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
-                                                        value={values.documento}
-                                                        id="documento"
-                                                        label="RNC/Cedula"
+                                                        value={values.nombre}
+                                                        id="nombre"
+                                                        name="nombre"
                                                         fullWidth
+                                                        label="Nombre"
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.documento && touched.documento}
-                                                        helperText={touched.documento && errors.documento}
+                                                        error={errors.nombre && touched.nombre}
+                                                        helperText={touched.nombre && errors.nombre}
                                                         renderInput={(params) => <TextField {...params} />}
                                                     />
                                                 </Grid>
