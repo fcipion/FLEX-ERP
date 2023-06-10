@@ -42,9 +42,11 @@ import tipoitbiss from './slices/tipoitbis';
 import itbiss from './slices/itbis';
 import cuentas from './slices/cuenta';
 import estadoDocs from './slices/estadoDoc';
+import ordenes from './slices/orden';
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
+    orden: ordenes,
     snackbar: snackbarReducer,
     menu: menuReducer,
     rol: rols,

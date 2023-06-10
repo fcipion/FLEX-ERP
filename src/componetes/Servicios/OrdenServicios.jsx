@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useSelector, dispatch } from 'store';
+import { getOrdenes } from 'store/slices/orden';
 import MainCard from 'ui-component/cards/MainCard';
 import AddUpdateOrden from './AddUpdateOrden';
-import axios from 'utils/axios';
-import { url } from '../../api/Peticiones';
 
 // ======== MUI ==========
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -13,6 +13,7 @@ import Stack from '@mui/material/Stack';
 import CreateIcon from '@mui/icons-material/Create';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 
 const OrdenServicios = () => {
 
@@ -40,15 +41,15 @@ const OrdenServicios = () => {
         }
     ];
 
-    const [ordenes, setOrdenes] = useState([]);
+    const { ordenes } = useSelector((state) => state.orden);
+    const [orden, setOrden] = useState('')
     const [showForm, setShowForm] = useState(false);
-    const [orden, setOrden] = useState(null); // Orden para actualizar
 
-    // ===== Obtener Ordernes ====
-    const getOrdenes = async () => {
-        let result = await axios.get(`${url}/listar_orden_servicio`)
-        setOrdenes(result.data.rows)
-    }
+    // ===== Obtener Ordenes ====
+    useEffect(() => {
+        dispatch(getOrdenes())
+    }, [dispatch])
+
 
     // ===== Agregar Orden ====
     const newOrden = async () => {
@@ -59,12 +60,8 @@ const OrdenServicios = () => {
     const updateOrden = async (orden) => {
         setShowForm(true)
         setOrden(orden)
+        console.log('la orden', orden);
     }
-
-    useEffect(() => {
-        getOrdenes()
-    }, [showForm])
-
 
     return (showForm ?
         <> <AddUpdateOrden setShowForm={setShowForm} orden={orden} setOrden={setOrden} /> </>
@@ -88,24 +85,29 @@ const OrdenServicios = () => {
 
 
                 {/* ===== Tabla y filtros ===== */}
-                <DataGrid
-                    style={{ height: 400 }}
-                    rows={ordenes}
-                    columns={columns}
-                    disableColumnFilter
-                    disableColumnSelector
-                    disableDensitySelector
-                    components={{ Toolbar: GridToolbar }}
-                    autoPageSize
-                    componentsProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                            quickFilterProps: { debounceMs: 500 },
-                            printOptions: { disableToolbarButton: true },
-                            csvOptions: { disableToolbarButton: true },
-                        }
-                    }}
-                />
+                {ordenes && ordenes.rows ?
+                    <DataGrid
+                        style={{ height: 400 }}
+                        rows={ordenes.rows}
+                        columns={columns}
+                        disableColumnFilter
+                        disableColumnSelector
+                        disableDensitySelector
+                        components={{ Toolbar: GridToolbar }}
+                        autoPageSize
+                        componentsProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                                quickFilterProps: { debounceMs: 500 },
+                                printOptions: { disableToolbarButton: true },
+                                csvOptions: { disableToolbarButton: true },
+                            }
+                        }}
+                    />
+                    :
+                    null
+                }
+
             </div>
         </>
     )
