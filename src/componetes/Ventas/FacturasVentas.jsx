@@ -1332,7 +1332,7 @@ const FacturasVentas = () => {
                                                     <Grid item xs={6}>
                                                         <Item>
                                                             <TextField
-                                                                values={value.ncf}
+                                                                value={value.ncf}
                                                                 id="ncf"
                                                                 name="ncf"
                                                                 fullWidth
