@@ -418,7 +418,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.nombre && touched.nombre}
                                                         helperText={touched.nombre && errors.nombre}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -431,7 +430,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.pagina_web && touched.pagina_web}
                                                         helperText={touched.pagina_web && errors.pagina_web}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         multiline
                                                         value={values.pagina_web}
@@ -452,7 +450,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.email && touched.email}
                                                         helperText={touched.email && errors.email}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         value={values.email}
                                                         onChange={handleChange}
@@ -541,7 +538,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.fax && touched.fax}
                                                         helperText={touched.fax && errors.fax}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         multiline
                                                         value={values.fax}
@@ -617,7 +613,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.limite_credito && touched.limite_credito}
                                                         helperText={touched.limite_credito && errors.limite_credito}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         value={values.limite_credito}
                                                         onChange={handleChange}
