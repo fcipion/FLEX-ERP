@@ -15,16 +15,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 // ======= Icons ========
+import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PrintIcon from '@mui/icons-material/Print';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-
-// ======= Icons ========
 import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
-import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 
 // ====== Formik =======
 import { Form, Formik } from "formik";
@@ -39,6 +40,9 @@ import DropProductos from 'controles/DropProductos';
 // ====== Galeria =====
 import ModalGaleria from './ModalGaleria';
 
+// ====== Lista de archivos =====
+import FileList from './FileList';
+import axios from 'utils/axios';
 import './Orden.css'
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -56,8 +60,51 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
 
   const onSubmit = async (values, actions) => {
     console.log('========== Valores =========', values);
+    createOrden(values)
     // actions.resetForm();
   };
+
+  const createOrden = (values) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem('serviceToken')}`);
+    var formdata = new FormData();
+
+    formdata.append("sucursal", values.sucursal);
+    formdata.append("cliente", values.cliente);
+    formdata.append("doctor", values.doctor);
+    formdata.append("vendedor", vendedor);
+    formdata.append("comentarios", values.comentarios);
+    formdata.append("fecha", values.fecha);
+    formdata.append("fecha_compromiso", values.fecha_compromiso);
+    formdata.append("estatus", values.estatus);
+    formdata.append("compania", '');
+
+    for (let detalle of values.detalles) {
+      formdata.append('detalles[line_id]', detalle.line_id);
+      formdata.append('detalles[producto]', detalle.producto);
+      formdata.append('detalles[cantidad]', detalle.cantidad);
+      formdata.append('detalles[repetida]', detalle.repetida);
+      formdata.append('detalles[estatus]', detalle.estatus);
+
+      for (let imagen of detalle.galeria) {
+        formdata.append('detalles[galeria]', imagen);
+      }
+    }
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: formdata,
+      redirect: 'follow'
+    };
+    fetch("http://integra3dapp-alexander.ddns.net/api/registro_orden_servicio",
+      requestOptions)
+      .then(response => response.text())
+      .then(result => console.log('======== creando el beta =======', result))
+      .catch(error => console.log('error', error));
+  }
+
 
   // ===== Salir del formulario ====
   const cancel = () => {
@@ -69,6 +116,8 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
   const [openGallery, setOpenGallery] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
 
+  // ==== Lista de archivos ====
+  const [fileListOpen, setFileListOpen] = useState({ line_id: '', isOpen: false });
 
   // ==== Generar Url para visualizar cada imagen en la galeria ====
   const imagesPreview = (files) => {
@@ -95,10 +144,12 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
   const addValues = () => {
     setDataRows((previewRows) => {
       const data = {
-        line_id: previewRows.length,
+        line_id: previewRows.length + 1,
         producto: '',
         cantidad: 0,
-        galeria: []
+        galeria: [],
+        repetida: false,
+        estatus: false
       };
       return [...previewRows, data];
     });
@@ -113,10 +164,9 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
   // ========== Actualizar cambio en fila de Artículo ======
   const handleChangeValue = (value, row, SetFieldValue, id) => {
     const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === row.line_id);
-
+    console.log('============estatus=======', value);
     setDataRows((previewRows) => {
-      if (id == 'galeria') previewRows[indexRow]['galeria'].push(value)
-      else previewRows[indexRow][id] = value;
+      previewRows[indexRow][id] = value;
 
       return [...previewRows];
     });
@@ -182,6 +232,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                     SetFieldValue={setFieldValue}
                     Label="Cliente"
                     Value={values.cliente}
+                    Onchange={(value) => { setFieldValue('cliente', value); }}
                   />
                 </Item>
               </Grid>
@@ -296,7 +347,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                         aria-label="a dense table"
                       >
 
-                        {/* =========== Header ======= */}
+                        {/* =========== Tabla Header ======= */}
                         <TableHead>
                           <TableRow style={{ backgroundColor: 'ButtonFace' }}>
                             <TableCell style={{ minWidth: 100, maxWidth: 100 }}>
@@ -308,17 +359,23 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                             <TableCell align="center" style={{ minWidth: 100, maxWidth: 100 }}>
                               Imágenes
                             </TableCell>
+                            <TableCell align="center" style={{ minWidth: 100, maxWidth: 100 }}>
+                              Repetida
+                            </TableCell>
+                            <TableCell align="center" style={{ minWidth: 100, maxWidth: 100 }}>
+                              Estatus
+                            </TableCell>
                             <TableCell
                               align="center"
                               style={{ minWidth: 100, maxWidth: 100 }}
                             >
-                              Acción
+                              Eliminar
                             </TableCell>
                           </TableRow>
                         </TableHead>
 
 
-                        {/* =========== Body ======= */}
+                        {/* =========== Tabla Body ======= */}
                         <TableBody>
                           {dataRows.map((row) => (
                             <TableRow
@@ -369,39 +426,62 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
 
                               {/* ============= Agregar Imagen ============= */}
                               <TableCell align="center">
-                                <Grid item xs={12}>
-                                  {row.galeria.length ? (row.galeria.length > 1 ? `${row.galeria.length} imágenes ` : `${row.galeria.length} imagen `) : 'Agregar Imagen '}
-                                  <input
-                                    id="galeria"
-                                    name="galeria"
-                                    type="file"
-                                    class="custom-file-input"
-                                    onChange={(event) => { handleChangeValue(event.target.files[0], row, setFieldValue, 'galeria'); }}
-                                  />
 
-                                </Grid>
+                                <Button
+                                  onClick={() => setFileListOpen({ isOpen: true, line_id: row.line_id })}
+                                  size="small"
+                                  variant="outlined"
+                                  endIcon={<CollectionsOutlinedIcon />}
+                                >
+                                  Gestionar
+                                </Button>
+
+
+                                <FileList
+                                  setFileListOpen={setFileListOpen}
+                                  fileListOpen={fileListOpen}
+                                  row={row}
+                                  setFieldValue={setFieldValue}
+                                  handleChangeValue={handleChangeValue}
+                                  imagesPreview={imagesPreview}
+                                />
 
                               </TableCell>
 
-                              {/* ============= Acciones ============= */}
+                              {/* ============= Repetida ============= */}
+                              <TableCell align="center">
+
+                                <FormControlLabel
+                                  label={row.repetida ? 'Si' : 'No'}
+                                  control={
+                                    <Switch
+                                      id="repetida"
+                                      name="repetida"
+                                      defaultValue={row.repetida}
+                                      onChange={(event) => { handleChangeValue(event.target.checked, row, setFieldValue, 'repetida'); }}
+                                    />}
+                                />
+
+                              </TableCell>
+
+                              {/* ============= Estatus ============= */}
+                              <TableCell align="center">
+                                <FormControlLabel
+                                  label={row.estatus ? 'Activo' : 'Inactivo'}
+                                  control={
+                                    <Switch
+                                      id="estatus"
+                                      name="estatus"
+                                      defaultValue={row.estatus}
+                                      onChange={(event) => { handleChangeValue(event.target.checked, row, setFieldValue, 'estatus'); }}
+                                    />}
+                                />
+                              </TableCell>
+
+                              {/* ===== Eliminar Fila ===== */}
                               <TableCell align="center">
                                 <Grid item xs={12}>
 
-                                  {/* ===== Ver Galeria ===== */}
-                                  <IconButton
-                                    aria-label="Agregar"
-                                    style={{ width: '30px' }}
-                                  >
-                                    <CollectionsOutlinedIcon
-                                      onClick={() => { imagesPreview(row.galeria) }}
-                                      titleAccess="Galeria"
-                                      fontSize="medium"
-                                      color="primary"
-                                    />
-                                  </IconButton>
-
-
-                                  {/* ===== Remover Fila ===== */}
                                   <IconButton
                                     aria-label="Agregar"
                                     style={{ width: '30px' }}
@@ -427,9 +507,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
               </div>
               <div style={{ textAlign: 'center', padding: 10 }}>
                 <Button
-                  onClick={() => {
-                    addValues();
-                  }}
+                  onClick={() => { addValues(); }}
                   size="small"
                   variant="outlined"
                   endIcon={<AddCircleTwoToneIcon />}
@@ -438,7 +516,6 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                 </Button>
               </div>
             </MainCard>
-
 
 
             <ModalGaleria
@@ -454,8 +531,5 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
     </div>
   )
 }
-
-
-
 
 export default AddUpdateOrden

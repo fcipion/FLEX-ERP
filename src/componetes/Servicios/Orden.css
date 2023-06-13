@@ -1,32 +1,47 @@
 .custom-file-input {
     color: transparent;
-    width: 30px;
-  }
-  .custom-file-input::-webkit-file-upload-button {
+    width: 120px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
     visibility: hidden;
-  }
-  .custom-file-input::before {
-    content: '+';
-    color: black;
+}
+
+.custom-file-input::before {
+    content: 'Agregar +';
+    color: #039aff;
     display: inline-block;
-    background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-    border: 1px solid #999;
+    background: transparent;
+    border: 1px solid #039aff;
     border-radius: 3px;
-    padding: 5px 8px;
+    padding: 8px 12px;
     outline: none;
     white-space: nowrap;
     cursor: pointer;
     text-shadow: 1px 1px #fff;
     font-weight: 700;
     font-size: 10pt;
-  }
-  .custom-file-input:hover::before {
-    border-color: black;
-  }
-  .custom-file-input:active {
+}
+
+
+
+.custom-file-input:active {
     outline: 0;
-  }
-  .custom-file-input:active::before {
-    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
-  }
-  
+}
+
+.custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.space-between{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.empty{
+    padding-top: 30px;
+    text-align: center;
+    opacity: 50%;
+}
+
