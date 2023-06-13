@@ -623,7 +623,7 @@ const Clientes = () => {
                                                         control={
                                                             <Switch
                                                                 name="estatus"
-                                                                checked={values.estatus}
+                                                                checked={!!values.estatus}
                                                                 onChange={(data) => {
                                                                     setFieldValue('estatus', data.target.checked);
                                                                 }}
