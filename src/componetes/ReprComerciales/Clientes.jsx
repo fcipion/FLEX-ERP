@@ -306,8 +306,8 @@ const Clientes = () => {
                             setOpenConfDlg(true);
                         };
 
-                        const handlerCreate = () => {
-                            setModoAccion('Crear nuevo');
+                        const handlerCreate = (value) => {
+                            setModoAccion(value);
                             handleSubmit();
                         };
                         const handlerPrint = () => {
