@@ -20,6 +20,9 @@ import TableRow from '@mui/material/TableRow';
 import PrintIcon from '@mui/icons-material/Print';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
+
+// ======= Icons ========
+import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 
@@ -33,6 +36,11 @@ import DropDoctores from 'controles/DropDoctores';
 import DropVendedor from 'controles/DropVendedor';
 import DropProductos from 'controles/DropProductos';
 
+// ====== Galeria =====
+import ModalGaleria from './ModalGaleria';
+
+import './Orden.css'
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -44,44 +52,76 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
 
+  const vendedor = JSON.parse(localStorage.getItem('userData')).sub
+
   const onSubmit = async (values, actions) => {
-    console.log(values);
-    console.log(actions);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    actions.resetForm();
+    console.log('========== Valores =========', values);
+    // actions.resetForm();
   };
 
-  const [datosClientes, SetDatosCliente] = useState({});
-
-  // ===== Cancelar Orden ====
+  // ===== Salir del formulario ====
   const cancel = () => {
     setShowForm(false)
     setOrden(null)
   }
 
-  const [dataRows, setDataRows] = useState([
-    {
-      line_id: 0,
-      producto: { title: '', value: '' },
-      cantidad: 0,
-      galeria: []
-    }
-  ]);
+  // ==== Galeria ====
+  const [openGallery, setOpenGallery] = useState(false);
+  const [galleryImages, setGalleryImages] = useState([]);
 
+
+  // ==== Generar Url para visualizar cada imagen en la galeria ====
+  const imagesPreview = (files) => {
+    if (!files) return;
+    let tmp = [];
+    for (let i = 0; i < files.length; i++) {
+      tmp.push({ src: URL.createObjectURL(files[i]) });
+    }
+    const objectUrls = tmp;
+    setGalleryImages(objectUrls);
+    setOpenGallery(true)
+
+    for (let i = 0; i < objectUrls.length; i++) {
+      return () => {
+        URL.revokeObjectURL(objectUrls[i]);
+      };
+    }
+  }
+
+  // ==== Artículos ====
+  const [dataRows, setDataRows] = useState([]);
+
+  // ========== Agregar fila de Artículo ======
   const addValues = () => {
     setDataRows((previewRows) => {
       const data = {
         line_id: previewRows.length,
         producto: '',
-        cantidad: 0
+        cantidad: 0,
+        galeria: []
       };
       return [...previewRows, data];
     });
   };
 
+  // ========== Eliminar fila de Artículo ======
   const deleteValues = (row, setFieldValue) => {
     setDataRows((previewRows) => [...previewRows.filter((Row) => Row.line_id !== row.line_id)]);
-    setFieldValue('detalle', dataRows);
+    setFieldValue('detalles', dataRows);
+  };
+
+  // ========== Actualizar cambio en fila de Artículo ======
+  const handleChangeValue = (value, row, SetFieldValue, id) => {
+    const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === row.line_id);
+
+    setDataRows((previewRows) => {
+      if (id == 'galeria') previewRows[indexRow]['galeria'].push(value)
+      else previewRows[indexRow][id] = value;
+
+      return [...previewRows];
+    });
+
+    SetFieldValue('detalles', dataRows);
   };
 
 
@@ -91,10 +131,16 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
       <Formik
         initialValues={{
           cliente: '',
+          compania: '',
           sucursal: '',
           doctor: '',
-          fecha: '',
-          vendedor: ''
+          fecha: Date.now(),
+          fecha_compromiso: '',
+          vendedor: vendedor,
+          createdAt: Date.now(),
+          comentarios: '',
+          estatus: false,
+          detalles: dataRows
         }}
         validationSchema={formSchema}
         onSubmit={onSubmit}
@@ -136,8 +182,6 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                     SetFieldValue={setFieldValue}
                     Label="Cliente"
                     Value={values.cliente}
-                    SetDatosCliente={SetDatosCliente}
-                    Onchange={(value) => { }}
                   />
                 </Item>
               </Grid>
@@ -165,16 +209,12 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                 <Item>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      id="fecha"
+                      id="fecha_compromiso"
                       label="Fecha"
-                      value={values.fecha}
+                      value={values.fecha_compromiso}
                       onBlur={handleBlur}
                       fullWidth
-                      error={errors.fecha && touched.fecha}
-                      helperText={
-                        touched.fecha && errors.fecha
-                      }
-                      onChange={(value) => { }}
+                      onChange={(value) => { setFieldValue('fecha_compromiso', (new Date(value.toDate())).getTime()); }}
                       renderInput={(params) => (
                         <TextField size="small" fullWidth {...params} required />
                       )}
@@ -201,8 +241,9 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                 </Item>
               </Grid>
 
+
               {/* ======== Vendedor ======= */}
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <Item>
                   <DropVendedor
                     Id="vendedor"
@@ -214,7 +255,8 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                     OnBlur={handleBlur}
                   />
                 </Item>
-              </Grid>
+              </Grid> */}
+
 
               {/* ======== Comentarios ======= */}
               <Grid item xs={6}>
@@ -227,7 +269,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                     multiline
                     size="small"
                     label="Comentarios"
-                    onChange={(value) => { }}
+                    onChange={(event) => { setFieldValue('comentarios', event.target.value); }}
                     onBlur={(value) => { }}
                     error={errors.comentarios && touched.comentarios}
                     helperText={touched.comentarios && errors.comentarios}
@@ -263,7 +305,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                             <TableCell style={{ minWidth: 100, maxWidth: 100 }}>
                               Cantidad
                             </TableCell>
-                            <TableCell style={{ minWidth: 100, maxWidth: 100 }}>
+                            <TableCell align="center" style={{ minWidth: 100, maxWidth: 100 }}>
                               Imágenes
                             </TableCell>
                             <TableCell
@@ -304,7 +346,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                                   Label=""
                                   Value={row.producto}
                                   Row={row}
-                                  Onchange={(value) => { }}
+                                  Onchange={handleChangeValue}
                                 />
                               </TableCell>
 
@@ -319,48 +361,59 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                                     label=""
                                     type="number"
                                     defaultValue={row.cantidad}
-                                    onBlur={(value) => { }}
+                                    onBlur={(event) => { handleChangeValue(event.target.value, row, setFieldValue, 'cantidad'); }}
                                     size="small"
                                   />
                                 </Grid>
                               </TableCell>
 
-                              {/* ============= Galeria ============= */}
-                              <TableCell align="right">
+                              {/* ============= Agregar Imagen ============= */}
+                              <TableCell align="center">
                                 <Grid item xs={12}>
-                                  <TextField
-                                    fullWidth
-                                    variant="standard"
+                                  {row.galeria.length ? (row.galeria.length > 1 ? `${row.galeria.length} imágenes ` : `${row.galeria.length} imagen `) : 'Agregar Imagen '}
+                                  <input
                                     id="galeria"
                                     name="galeria"
-                                    label=""
                                     type="file"
-                                    defaultValue={row.galeria}
-                                    onBlur={(value) => { }}
-                                    size="small"
+                                    class="custom-file-input"
+                                    onChange={(event) => { handleChangeValue(event.target.files[0], row, setFieldValue, 'galeria'); }}
                                   />
+
                                 </Grid>
+
                               </TableCell>
 
-                              {/* ============= Remover ============= */}
-                              <TableCell align="right">
+                              {/* ============= Acciones ============= */}
+                              <TableCell align="center">
                                 <Grid item xs={12}>
+
+                                  {/* ===== Ver Galeria ===== */}
+                                  <IconButton
+                                    aria-label="Agregar"
+                                    style={{ width: '30px' }}
+                                  >
+                                    <CollectionsOutlinedIcon
+                                      onClick={() => { imagesPreview(row.galeria) }}
+                                      titleAccess="Galeria"
+                                      fontSize="medium"
+                                      color="primary"
+                                    />
+                                  </IconButton>
+
+
+                                  {/* ===== Remover Fila ===== */}
                                   <IconButton
                                     aria-label="Agregar"
                                     style={{ width: '30px' }}
                                   >
                                     <DeleteTwoToneIcon
-                                      onClick={() => {
-                                        deleteValues(
-                                          row,
-                                          setFieldValue
-                                        );
-                                      }}
+                                      onClick={() => { deleteValues(row, setFieldValue); setGalleryImages(row.galeria) }}
                                       titleAccess="Eliminar"
                                       fontSize="medium"
                                       color="error"
                                     />
                                   </IconButton>
+
                                 </Grid>
                               </TableCell>
                             </TableRow>
@@ -369,6 +422,7 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
                       </Table>
                     </TableContainer>
                   </Paper>
+
                 </Grid>
               </div>
               <div style={{ textAlign: 'center', padding: 10 }}>
@@ -387,6 +441,12 @@ const AddUpdateOrden = ({ setShowForm, orden, setOrden }) => {
 
 
 
+            <ModalGaleria
+              openGallery={openGallery}
+              setOpenGallery={setOpenGallery}
+              galleryImages={galleryImages}
+              setGalleryImages={setGalleryImages}
+            />
           </Form>
         )}
       </Formik>
