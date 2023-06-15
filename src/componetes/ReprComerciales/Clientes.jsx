@@ -40,6 +40,7 @@ import DropTipoDocumentos from 'controles/DropTipoDocumentos';
 import DropTerminoPago from 'controles/DropTerminoPago';
 import DropVendedor from 'controles/DropVendedor';
 import DropTipoClientes from 'controles/DropTipoClientes';
+import { useFetchPersonData } from '../../hooks/useFetchClient';
 
 const formSchema = Yup.object().shape({
     tipo_cliente: Yup.string().required('Requerido'),
@@ -301,6 +302,16 @@ const Clientes = () => {
                         values.cliente = userData.cliente;
                         // setFieldValue('descripcion', 'Fleirin');
 
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        const { isLoading, personData, getPerson } = useFetchPersonData();
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        useEffect(() => {
+                            if (values.documento) {
+                                getPerson(values.documento.replace(/-/g, ''));
+                            }
+                        }, [values.documento]);
+                        const personName = personData?.nombre || '';
+
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
@@ -409,11 +420,11 @@ const Clientes = () => {
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
-                                                        value={values.nombre}
+                                                        value={personName}
                                                         id="nombre"
                                                         name="nombre"
                                                         fullWidth
-                                                        label="Nombre"
+                                                        label={personName ? '' : 'Nombre'}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         error={errors.nombre && touched.nombre}
