@@ -55,7 +55,8 @@ export function getOrdenById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_orden_servicio/${id}`);
-            dispatch(slice.actions.getById(response.data));
+            dispatch(slice.actions.getById(response.data.data));
+            console.log('=====init', response.data.data);
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }

@@ -24,8 +24,7 @@ const FileList = ({ fileListOpen, setFileListOpen, row, handleChangeValue, setFi
 
 
     const addImage = (event) => {
-        let galeria = row.galeria;
-        galeria.push(event.target.files[0]);
+        let galeria = [...row.galeria, event.target.files[0]]
         handleChangeValue(galeria, row, setFieldValue, 'galeria');
     }
 
@@ -109,7 +108,7 @@ const FileList = ({ fileListOpen, setFileListOpen, row, handleChangeValue, setFi
                         <div className='empty'>
                             <CollectionsOutlinedIcon
                                 titleAccess="Galeria"
-                                style={{fontSize: 90}}
+                                style={{ fontSize: 90 }}
                                 color="medium"
                             />
 
@@ -118,7 +117,7 @@ const FileList = ({ fileListOpen, setFileListOpen, row, handleChangeValue, setFi
                         :
                         null
 
-                }
+                    }
 
                 </Box>
             </Modal>
