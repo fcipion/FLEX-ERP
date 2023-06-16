@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import { DataGrid, GridToolbar, GridActionsCellItem } from '@mui/x-data-grid';
@@ -8,11 +8,19 @@ import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 
 export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAdd }) {
+    const [pageSize, setPageSize] = useState(10);
     // Otherwise filter will be applied on fields such as the hidden column id
     // const columns = React.useMemo(() => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)), [data.columns]);
+    if (!data || !data.rows || !data.columns) {
+        data = {
+            rows: [],
+            columns: []
+        };
+    }
+
     const resultado = {
         columns: data.columns,
-        rows: data.rows.filter((result) => result.estatus === true)
+        rows: data.rows.filter(({ estatus }) => estatus === true)
     };
 
     const actions = {
@@ -108,7 +116,6 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
     };
 
     const columnsData = [id, nombre, ...columns, estatus, actions];
-    // console.log('columns', columns[1].flex);
 
     return (
         <Box
@@ -170,8 +177,11 @@ export default function QuickFilteringGrid({ data, clickView, clickEdit, clickAd
                 rows={resultado.rows}
                 columns={columnsData}
                 components={{ Toolbar: GridToolbar }}
-                rowHeight
-                autoPageSize
+                getRowHeight={() => 'auto'}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                rowsPerPageOptions={[10, 20, 50, 100]}
+                pagination
                 disableExtendRowFullWidth={false}
                 componentsProps={{
                     toolbar: {

@@ -50,8 +50,6 @@ export default function DropCodicionPago({ Id, SetFieldValue, Value, SetValue, L
 
     const Values = data.find((data) => data.value === Value);
 
-    console.log('Values', Values);
-
     React.useEffect(() => {
         let active = true;
 

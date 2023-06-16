@@ -44,10 +44,9 @@ export function getCompanias() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_compania`);
-            console.log('data', response);
+
             dispatch(slice.actions.getCompaniasSuccess(response.data));
         } catch (error) {
-            console.log('error', error);
             dispatch(slice.actions.hasError(error));
         }
     };
@@ -57,7 +56,7 @@ export function getCompaniaById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_compania/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getCompaniasSuccessById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

@@ -143,7 +143,6 @@ const FacturasVentas = () => {
 
     const handleChangeValue = (value, row, SetFieldValue, id) => {
         const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === row.line_id);
-        console.log('indexRow', indexRow);
 
         setDataRows((previewRows) => {
             previewRows[indexRow][id] = value;
@@ -217,8 +216,6 @@ const FacturasVentas = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('producto', productos);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -255,24 +252,22 @@ const FacturasVentas = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/producto/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/producto/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/producto/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/producto/view/${value}/${generateId()}`);
     };
 
@@ -325,7 +320,6 @@ const FacturasVentas = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -337,7 +331,7 @@ const FacturasVentas = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_producto`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -348,7 +342,7 @@ const FacturasVentas = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_producto`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -361,7 +355,7 @@ const FacturasVentas = () => {
                                         result = await axios.post(`${url}/registro_producto`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/producto/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -371,7 +365,7 @@ const FacturasVentas = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_producto/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -384,7 +378,7 @@ const FacturasVentas = () => {
                                         result = await axios.put(`${url}/actualizar_producto/${id}`, value);
                                         resetForm();
                                         navegate(`/producto/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -394,7 +388,7 @@ const FacturasVentas = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_producto`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -404,7 +398,7 @@ const FacturasVentas = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_producto/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -427,13 +421,11 @@ const FacturasVentas = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);
@@ -661,9 +653,6 @@ const FacturasVentas = () => {
                                                                 error={errors.fecha_vencimiento && touched.fecha_vencimiento}
                                                                 helperText={touched.fecha_vencimiento && errors.fecha_vencimiento}
                                                                 onChange={(value) => {
-                                                                    // console.log('event', value);
-                                                                    // console.log('value', value);
-
                                                                     // setValue(value);
                                                                     setFieldValue('fecha_vencimiento', value);
                                                                 }}
@@ -716,9 +705,6 @@ const FacturasVentas = () => {
                                                                 error={errors.fecha_vencimiento_ncf && touched.fecha_vencimiento_ncf}
                                                                 helperText={touched.fecha_vencimiento_ncf && errors.fecha_vencimiento_ncf}
                                                                 onChange={(value) => {
-                                                                    // console.log('event', value);
-                                                                    // console.log('value', value);
-
                                                                     // setValue(value);
                                                                     setFieldValue('fecha_vencimiento_ncf', value);
                                                                 }}

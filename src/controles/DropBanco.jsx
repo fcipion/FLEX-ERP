@@ -47,10 +47,7 @@ export default function DropBanco({ Id, SetFieldValue, Value, SetValue, Label, E
         });
     }
 
-    console.log('bancos', banco);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

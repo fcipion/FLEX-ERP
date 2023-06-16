@@ -74,8 +74,6 @@ const Bancos = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    // console.log('rol', rol);
-
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -112,24 +110,22 @@ const Bancos = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/banco/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/banco/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/banco/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/banco/view/${value}/${generateId()}`);
     };
 
@@ -170,7 +166,6 @@ const Bancos = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -182,7 +177,7 @@ const Bancos = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_banco`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -193,7 +188,7 @@ const Bancos = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_banco`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -206,7 +201,7 @@ const Bancos = () => {
                                         result = await axios.post(`${url}/registro_banco`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/banco/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -216,7 +211,7 @@ const Bancos = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_banco/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -229,7 +224,7 @@ const Bancos = () => {
                                         result = await axios.put(`${url}/actualizar_banco/${id}`, value);
                                         resetForm();
                                         navegate(`/banco/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -239,7 +234,7 @@ const Bancos = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_banco`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -249,7 +244,7 @@ const Bancos = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_banco/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -272,13 +267,11 @@ const Bancos = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

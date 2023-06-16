@@ -40,13 +40,16 @@ import DropTipoDocumentos from 'controles/DropTipoDocumentos';
 import DropTerminoPago from 'controles/DropTerminoPago';
 import DropVendedor from 'controles/DropVendedor';
 import DropTipoClientes from 'controles/DropTipoClientes';
+import { useFetchPersonData } from '../../hooks/useFetchClient';
 
 const formSchema = Yup.object().shape({
     tipo_cliente: Yup.string().required('Requerido'),
     nombre: Yup.string().required('Requerido'),
     vendedor: Yup.string().required('Requerido'),
     tipo_documento: Yup.string().required('Requerido'),
-    documento: Yup.string().required('Requerido'),
+    documento: Yup.string()
+        .matches(/^\d{3}-\d{7}-\d{1}$/, 'Cédula incorrecta. Asegúrate de introducir todos los dígitos.')
+        .required('Requerido'),
     pagina_web: Yup.string().required('Requerido'),
     whatsapp: Yup.string().required('Requerido'),
     email: Yup.string().email('Invalid email').required('Requerido'),
@@ -88,7 +91,6 @@ const Clientes = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('cliente', cliente);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -125,28 +127,25 @@ const Clientes = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/cliente/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/cliente/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/cliente/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/cliente/view/${value}/${generateId()}`);
     };
 
-    console.log('error', error);
     return modo === 'Index' ? (
         <>
             {clientes.length !== 0 ? (
@@ -202,7 +201,6 @@ const Clientes = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -213,9 +211,8 @@ const Clientes = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Create', value);
                                         result = await axios.post(`${url}/registro_cliente`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -226,7 +223,7 @@ const Clientes = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_cliente`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -238,7 +235,7 @@ const Clientes = () => {
                                         result = await axios.post(`${url}/registro_cliente`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/cliente/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -248,7 +245,7 @@ const Clientes = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_cliente/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -261,7 +258,7 @@ const Clientes = () => {
                                         result = await axios.put(`${url}/actualizar_cliente/${id}`, value);
                                         resetForm();
                                         navegate(`/cliente/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -271,7 +268,7 @@ const Clientes = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_cliente`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -281,7 +278,7 @@ const Clientes = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_cliente/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -304,15 +301,21 @@ const Clientes = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.cliente = userData.cliente;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
 
-                        console.log('valuesFor', errors);
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        const { isLoading, personData, getPerson } = useFetchPersonData();
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        useEffect(() => {
+                            if (values.documento) {
+                                getPerson(values.documento.replace(/-/g, ''));
+                            }
+                        }, [values.documento]);
+                        const personName = personData?.nombre || '';
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);
@@ -386,17 +389,19 @@ const Clientes = () => {
                                                 }}
                                             >
                                                 <Grid item xs={12}>
-                                                    <TextField
-                                                        value={values.nombre}
-                                                        id="nombre"
-                                                        name="nombre"
+                                                    <PatternFormat
+                                                        value={values.documento}
+                                                        id="documento"
+                                                        label="RNC/Cedula"
                                                         fullWidth
-                                                        label="Nombre"
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.nombre && touched.nombre}
-                                                        helperText={touched.nombre && errors.nombre}
+                                                        error={errors.documento && touched.documento}
+                                                        helperText={touched.documento && errors.documento}
                                                         renderInput={(params) => <TextField {...params} />}
+                                                        format="###-#######-#"
+                                                        mask="_"
+                                                        customInput={TextField}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -415,15 +420,15 @@ const Clientes = () => {
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
-                                                        value={values.documento}
-                                                        id="documento"
-                                                        label="RNC/Cedula"
+                                                        value={personName}
+                                                        id="nombre"
+                                                        name="nombre"
                                                         fullWidth
+                                                        label={personName ? '' : 'Nombre'}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        error={errors.documento && touched.documento}
-                                                        helperText={touched.documento && errors.documento}
-                                                        renderInput={(params) => <TextField {...params} />}
+                                                        error={errors.nombre && touched.nombre}
+                                                        helperText={touched.nombre && errors.nombre}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12}>
@@ -436,7 +441,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.pagina_web && touched.pagina_web}
                                                         helperText={touched.pagina_web && errors.pagina_web}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         multiline
                                                         value={values.pagina_web}
@@ -457,7 +461,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.email && touched.email}
                                                         helperText={touched.email && errors.email}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         value={values.email}
                                                         onChange={handleChange}
@@ -546,7 +549,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.fax && touched.fax}
                                                         helperText={touched.fax && errors.fax}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         multiline
                                                         value={values.fax}
@@ -622,7 +624,6 @@ const Clientes = () => {
                                                         onBlur={handleBlur}
                                                         error={errors.limite_credito && touched.limite_credito}
                                                         helperText={touched.limite_credito && errors.limite_credito}
-                                                        renderInput={(params) => <TextField {...params} />}
                                                         fullWidth
                                                         value={values.limite_credito}
                                                         onChange={handleChange}
@@ -633,7 +634,7 @@ const Clientes = () => {
                                                         control={
                                                             <Switch
                                                                 name="estatus"
-                                                                checked={values.estatus}
+                                                                checked={!!values.estatus}
                                                                 onChange={(data) => {
                                                                     setFieldValue('estatus', data.target.checked);
                                                                 }}

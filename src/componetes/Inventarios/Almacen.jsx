@@ -37,7 +37,7 @@ import LineProgress from 'controles/LineProgress';
 import DropMonedas from 'controles/DropMonedas';
 import DropRols from 'controles/DropRols';
 import DropSucursal from 'controles/DropSucursal';
-import { transformInventoryData } from "../../utils/dataTransform";
+import { transformInventoryData } from '../../utils/dataTransform';
 
 const formSchema = Yup.object().shape({
     sucursal: Yup.string().required('Requerido'),
@@ -73,8 +73,6 @@ const Almacen = () => {
     const [alertValue, setAlert] = useState({ type: '', message: '', open: false });
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
-
-    // console.log('rol', rol);
 
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
@@ -112,24 +110,22 @@ const Almacen = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/almacen/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/almacen/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/almacen/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/almacen/view/${value}/${generateId()}`);
     };
 
@@ -175,7 +171,6 @@ const Almacen = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -187,7 +182,7 @@ const Almacen = () => {
                                 switch (modoAccion) {
                                     case 'Crear':
                                         result = await axios.post(`${url}/registro_almacen`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -198,7 +193,7 @@ const Almacen = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_almacen`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -211,7 +206,7 @@ const Almacen = () => {
                                         result = await axios.post(`${url}/registro_almacen`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/almacen/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -221,7 +216,7 @@ const Almacen = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_almacen/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -234,7 +229,7 @@ const Almacen = () => {
                                         result = await axios.put(`${url}/actualizar_almacen/${id}`, value);
                                         resetForm();
                                         navegate(`/almacen/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -244,7 +239,7 @@ const Almacen = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_almacen`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -254,7 +249,7 @@ const Almacen = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_almacen/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -277,13 +272,11 @@ const Almacen = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         values.compania = userData.compania;
                         // setFieldValue('descripcion', 'Fleirin');
-                        console.log('fomrValue', values);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

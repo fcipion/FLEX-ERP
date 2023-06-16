@@ -59,7 +59,6 @@ export default function ControlDetalleDocumento({
     ventas,
     venta
 }) {
-    console.log('FacturasDetalle', Facturas);
     const [valueTab, setValueTab] = React.useState('1');
     const [camposRequerdioValue, setCamposRequerdio] = React.useState({ descripcion: '' });
     const HandlerChangeValues = (field, value, proceso, row, SetFieldValue, idProducto, id) => {
@@ -79,21 +78,18 @@ export default function ControlDetalleDocumento({
                 // Extrar el index de la linea de la factura;
                 // debugger;
 
-                console.log('determinacionPrecios', determinacionPrecios);
                 const indexRow = Facturas.detalles.findIndex((dataRow) => dataRow.line_id === row.line_id);
 
                 // Determinación de precios; Se recorre el arreglo de determinacion de precios, para idicar el precio del ariticulo;
                 const datosDeterminacionPrecios = determinacionPrecios.rows
                     .find((result) => result.lista_precio._id === DatosProducto.lista_precio_venta._id)
-                    .detalles.find((dResulto) => {
-                        console.log('Resuldato', dResulto);
-                        return (
+                    .detalles.find(
+                        (dResulto) =>
                             /* eslint no-underscore-dangle: 0 */
                             dResulto.producto._id ===
                                 /* eslint no-underscore-dangle: 0 */
                                 DatosProducto._id && dResulto.unidad_medida._id === DatosProducto.unidad_medida_venta._id
-                        );
-                    }); // DatosProducto.lista_precio_venta)
+                    ); // DatosProducto.lista_precio_venta)
 
                 // Determinación de ITBIS; determinar el ITBIS que tiene asignado el articulo.
                 let porcentajeITBIS = 0;
@@ -103,7 +99,6 @@ export default function ControlDetalleDocumento({
                         porcentajeITBIS += parseFloat(data.tipo_itbis.porcentaje);
                     });
                 }
-                console.log('valueItbis', porcentajeITBIS);
 
                 // DatosProducto.lista_precio_venta)
                 SetFacturas((previewRows) => {
@@ -226,13 +221,13 @@ export default function ControlDetalleDocumento({
                 (accumulator, currentValue) => accumulator + parseFloat(currentValue.descuentos),
                 valorInicial
             );
-            // console.log('totalAplicado', totalAplicado);
+
             // Monto Aplicado
             previewValues.montoAplicado = totalAplicado;
             previewValues.totalDescuentos = totalDescuentos + previewValues.descuentosCB;
             // Monto Pendiente;
             const totalPendiente = previewValues.subtotal - totalAplicado;
-            console.log('totalPendiente', totalPendiente);
+
             previewValues.totalPendiente = totalPendiente;
             // SetFieldValue('montoAplicado', totalAplicado);
             // SetFieldValue('totalPendiente', totalPendiente);
@@ -374,8 +369,6 @@ export default function ControlDetalleDocumento({
         setFieldValue('detalles', detallesFactura);
     };
 
-    console.log('Facturas', Facturas);
-
     const deleteValues = (row, setFieldValue) => {
         // SetFacturas((previewRows) => [...previewRows.filter((Row) => Row.line_id !== row.line_id)]);
         SetFacturas((previewFacturas) => {
@@ -388,7 +381,6 @@ export default function ControlDetalleDocumento({
 
     // const handlerChange = (value, Row, SetFieldValue, Id) => {
     //     const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === Row.line_id);
-    //     console.log('indexRow', value);
 
     //     setDataRows((previewRows) => {
     //         previewRows[indexRow][Id] = value;
@@ -417,7 +409,7 @@ export default function ControlDetalleDocumento({
     //         SetFieldValue('totalDescuentos', totalDescuentos);
     //         SetFieldValue('itbis', itbis);
     //         SetFieldValue('total', total);
-    //         console.log('dataRows', dataRows);
+
     //         SetFieldValue('detalle', dataRows);
 
     //         return [...previewRows];
@@ -427,7 +419,6 @@ export default function ControlDetalleDocumento({
     const HandleValueChange = (event, valueField) => {
         const { id, name } = event.target;
 
-        console.log('valueField', valueField);
         document.getElementsByName([name]).value = formatter.format(valueField);
     };
 

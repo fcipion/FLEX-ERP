@@ -44,7 +44,7 @@ export function getClaseReprComerciales() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipo_cliente`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getClaseReprComercialesById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipo_cliente/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

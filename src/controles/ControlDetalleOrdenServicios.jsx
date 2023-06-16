@@ -57,7 +57,6 @@ export default function ControlDetalleOrdenServicios({
     SetFacturas,
     HandlerChangeValues
 }) {
-    console.log('FacturasDetalle', Facturas);
     const [valueTab, setValueTab] = React.useState('1');
     const [camposRequerdioValue, setCamposRequerdio] = React.useState({ descripcion: '' });
     //     {
@@ -201,8 +200,6 @@ export default function ControlDetalleOrdenServicios({
         });
     };
 
-    console.log('Facturas', Facturas);
-
     const deleteValues = (row, setFieldValue) => {
         // SetFacturas((previewRows) => [...previewRows.filter((Row) => Row.line_id !== row.line_id)]);
         SetFacturas((previewFacturas) => {
@@ -215,7 +212,6 @@ export default function ControlDetalleOrdenServicios({
 
     // const handlerChange = (value, Row, SetFieldValue, Id) => {
     //     const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === Row.line_id);
-    //     console.log('indexRow', value);
 
     //     setDataRows((previewRows) => {
     //         previewRows[indexRow][Id] = value;
@@ -244,7 +240,7 @@ export default function ControlDetalleOrdenServicios({
     //         SetFieldValue('totalDescuentos', totalDescuentos);
     //         SetFieldValue('itbis', itbis);
     //         SetFieldValue('total', total);
-    //         console.log('dataRows', dataRows);
+
     //         SetFieldValue('detalle', dataRows);
 
     //         return [...previewRows];
@@ -254,7 +250,6 @@ export default function ControlDetalleOrdenServicios({
     const HandleValueChange = (event, valueField) => {
         const { id, name } = event.target;
 
-        console.log('valueField', valueField);
         document.getElementsByName([name]).value = formatter.format(valueField);
     };
 

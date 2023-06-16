@@ -24,7 +24,6 @@ export default function AlertDialog({ Open, titulo, setValue, SetOpenConfDlg }) 
         setOpen(true);
     });
 
-    console.log('Open', open);
     return (
         <>
             {/* <Button variant="outlined" onClick={handleClickOpen}>

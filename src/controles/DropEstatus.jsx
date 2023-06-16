@@ -9,7 +9,6 @@ const data = [
 ];
 
 export default function DropEstatus({ SetValue, Id, FormikValue }) {
-    console.log('formik.va', FormikValue);
     return (
         <Autocomplete
             disablePortal
@@ -19,7 +18,6 @@ export default function DropEstatus({ SetValue, Id, FormikValue }) {
             renderInput={(params) => <TextField {...params} label="Estatus" fullWidth />}
             // value= {data.find((data) => data.value === FormikValue.estatus)}
             onChange={(event, value) => {
-                console.log('Value', value);
                 SetValue(value);
                 FormikValue[Id] = true;
             }}

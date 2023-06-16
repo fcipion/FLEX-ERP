@@ -20,7 +20,7 @@ import DropEstatus from 'controles/DropEstatus';
 import DropMonedas from 'controles/DropMonedas';
 import { useParams } from 'react-router-dom';
 import TitleForm from 'controles/Formulario';
-import { Stack } from '@mui/system'; 
+import { Stack } from '@mui/system';
 import MyDocument from 'componetes/Reportes/MyDocument';
 import ReactDOM from 'react-dom';
 import { PDFViewer } from '@react-pdf/renderer';
@@ -99,7 +99,7 @@ const Layouts = () => {
                         setTypeMessage('success');
                         setTitleMessage('Creada');
                         alert(JSON.stringify(values, null, 2));
-                        console.log('values', values);
+
                         alert(JSON.stringify(values, null, 2));
                         setSubmitting(false);
                     }, 400);
@@ -116,16 +116,13 @@ const Layouts = () => {
                     }
 
                     const handlerDelete = () => {
-                        console.log('delete');
                         handleSubmit();
                     };
 
                     const handlerCreate = (value) => {
-                        console.log('create', value);
                         handleSubmit();
                     };
                     const handlerPrint = () => {
-                        // console.log('Print');
                         // ReactPDF.renderToStream(<MyDocument/>)
                         // handleSubmit();
                     };

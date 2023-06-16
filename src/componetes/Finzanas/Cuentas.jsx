@@ -83,7 +83,6 @@ const Cuentas = () => {
     const [modoAccion, setModoAccion] = useState();
     const [openConfDlg, setOpenConfDlg] = useState(false);
 
-    console.log('cuenta', cuenta);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     let formTitulo = '';
     switch (modo) {
@@ -120,28 +119,25 @@ const Cuentas = () => {
     };
 
     const handlerAdd = () => {
-        console.log('handlerAdd');
         navegate(`/cuenta/create/0/${generateId()}`);
     };
 
     const handlerListar = () => {
-        console.log('handlerListar');
         navegate(`/cuenta/Index/${id}/${generateId()}`);
     };
 
     const clickEdit = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/cuenta/edit/${value}/${generateId()}`);
     };
 
     const clickView = (value) => {
         /* eslint no-underscore-dangle: 0 */
-        console.log('value', value);
+
         navegate(`/cuenta/view/${value}/${generateId()}`);
     };
 
-    console.log('error', error);
     return modo === 'Index' ? (
         <>
             {cuentas.length !== 0 ? (
@@ -182,7 +178,6 @@ const Cuentas = () => {
                         setTimeout(async () => {
                             // const modoAccion = modo;
                             let result = '';
-                            console.log('modoAccion', modoAccion);
 
                             if (modo === 'view') {
                                 setAlert({ type: 'warning', open: true, message: MensajeVisualizar });
@@ -193,9 +188,8 @@ const Cuentas = () => {
                             try {
                                 switch (modoAccion) {
                                     case 'Crear':
-                                        console.log('Create', value);
                                         result = await axios.post(`${url}/registro_cuenta_contable`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -206,7 +200,7 @@ const Cuentas = () => {
                                     case 'Crear nuevo':
                                         result = await axios.post(`${url}/registro_cuenta_contable`, value);
                                         resetForm();
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -218,7 +212,7 @@ const Cuentas = () => {
                                         result = await axios.post(`${url}/registro_cuenta_contable`, value);
                                         /* eslint no-underscore-dangle: 0 */
                                         navegate(`/cuenta/edit/${result.data.data._id}/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -228,7 +222,7 @@ const Cuentas = () => {
                                         break;
                                     case 'Editar':
                                         result = await axios.put(`${url}/actualizar_cuenta_contable/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -241,7 +235,7 @@ const Cuentas = () => {
                                         result = await axios.put(`${url}/actualizar_cuenta_contable/${id}`, value);
                                         resetForm();
                                         navegate(`/cuenta/create/0/${generateId()}`);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -251,7 +245,7 @@ const Cuentas = () => {
                                         break;
                                     case 'Copiar':
                                         result = await axios.post(`${url}/registro_cuenta_contable`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'success',
@@ -261,7 +255,7 @@ const Cuentas = () => {
                                         break;
                                     case 'delete':
                                         result = await axios.delete(`${url}/eliminar_cuenta_contable/${id}`, value);
-                                        console.log('result', result);
+
                                         if (!result.error) {
                                             setMessageInfo({
                                                 type: 'warning',
@@ -284,15 +278,11 @@ const Cuentas = () => {
                     {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => {
                         //  values.cuenta = userData.cuenta;
                         // setFieldValue('descripcion', 'Fleirin');
-                        // console.log('isSubmitting', moneda.data);
-
-                        console.log('valuesFor', errors);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
                             setOpenConfDlg(true);
                         };
-                        console.log('OpenConfdlg', openConfDlg);
 
                         const handlerCreate = (value) => {
                             setModoAccion(value);

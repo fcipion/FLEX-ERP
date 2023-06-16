@@ -44,7 +44,7 @@ export function getTComprobantes() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipos_comprobantes`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getTComprobantesById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_tipos_comprobantes/${id}`);
-            console.log('data', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

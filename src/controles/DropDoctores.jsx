@@ -47,10 +47,7 @@ export default function DropDoctores({ Id, SetFieldValue, Value, SetValue, Label
         });
     }
 
-    console.log('doctors', doctor);
     const Values = data.find((data) => data.value === Value);
-
-    console.log('Values', Values);
 
     React.useEffect(() => {
         let active = true;

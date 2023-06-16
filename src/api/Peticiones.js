@@ -27,7 +27,6 @@ const PostLogin = (usuario, password) => {
         .then((response) => response.json())
         .then((result) => result);
 
-    console.log('Datos', datos);
     return datos.then((result) => result);
 
     // return fetch(`${url}/login_admin`, requestOptions).then((response) => {

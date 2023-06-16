@@ -44,7 +44,7 @@ export function getVentas() {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_venta`);
-            console.log('data', response);
+
             dispatch(slice.actions.get(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
@@ -56,7 +56,7 @@ export function getVentaById(id) {
     return async () => {
         try {
             const response = await axios.get(`${url}/listar_venta/${id}`);
-            console.log('getVenta', response);
+
             dispatch(slice.actions.getById(response.data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
