@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fetchPersonData } from '../services/clients';
+import { fetchPersonData } from '../services/personData';
 
 export const useFetchPersonData = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -8,8 +8,8 @@ export const useFetchPersonData = () => {
     const getPerson = async (cedula) => {
         setIsLoading(true);
         try {
-            const nombre = await fetchPersonData(cedula);
-            setPersonData(nombre);
+            const data = await fetchPersonData(cedula);
+            setPersonData(data);
         } catch (error) {
             console.error('Failed to fetch person data', error.message);
         } finally {
