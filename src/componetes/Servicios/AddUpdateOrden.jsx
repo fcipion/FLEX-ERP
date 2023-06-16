@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { formSchema } from "./schemas/index";
 import MainCard from 'ui-component/cards/MainCard';
+import { useSelector, dispatch } from 'store';
+import { getOrdenById } from 'store/slices/orden';
 
 // ======== MUI ==========
 import { Button, Grid, TextField, IconButton } from '@mui/material';
@@ -21,6 +23,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 // ======= Icons ========
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
@@ -73,14 +76,18 @@ const Item = styled(Paper)(({ theme }) => ({
 const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }) => {
 
   const vendedor = JSON.parse(localStorage.getItem('userData')).sub
+  const { ordenDetail } = useSelector((state) => state.orden);
 
   // ===== setear orden ====
   useEffect(() => {
-    if (orden) setDataRows(orden.detalles)
-    console.log('========== orden =========', orden);
+
+    if (orden) {
+      setDataRows([...orden.detalles])
+      dispatch(getOrdenById(orden._id))
+      console.log('============orden', ordenDetail);
+    }
+
   }, [orden])
-
-
 
   const onSubmit = async (values, actions) => {
     console.log('========== Valores =========', values);
@@ -118,12 +125,15 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
 
     // =========== Actualizar Orden ==============
     if (orden) {
+      setLoading(true)
       await axios.put(`${url}/actualizar_orden_servicio/${orden._id}`, formdata).then(res => {
+        cancel()
         setOpenAlert(true)
-        setShowForm(false);
+        setLoading(false)
         actions.resetForm();
 
       }).catch((error) => {
+        setLoading(false)
         console.log('error', error);
         showError('Hay campos vacíos. Completa todos los campos del formulario');
       })
@@ -131,14 +141,16 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
 
     // =========== Crear Orden ==============
     else {
+      setLoading(true)
       await axios.post(`${url}/registro_orden_servicio`, formdata).then(res => {
+        cancel()
         setOpenAlert(true)
-        setShowForm(false);
+        setLoading(false)
         actions.resetForm();
-
       }).catch((error) => {
         console.log('error', error);
         showError('Hay campos vacíos. Completa todos los campos del formulario');
+        setLoading(false)
       })
 
     }
@@ -159,6 +171,9 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
     setOrden(null)
   }
 
+  // ==== Loading ====
+  const [loading, setLoading] = useState(false);
+
   // ==== Galeria ====
   const [openGallery, setOpenGallery] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -167,11 +182,18 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
   const [fileListOpen, setFileListOpen] = useState({ line_id: '', isOpen: false });
 
   // ==== Generar Url para visualizar cada imagen en la galeria ====
-  const imagesPreview = (files) => {
+  const imagesPreview = async (files) => {
     if (!files) return;
 
-    if (orden) {
+    let urls = []
 
+    if (orden) {
+      for (let file of files) {
+        urls.push({ src: `${url}/obtener_orden_servicio_img/${file}` })
+      }
+
+      setGalleryImages(urls);
+      setOpenGallery(true)
 
     } else {
       let tmp = [];
@@ -242,16 +264,18 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
     <>
       {showPDF && orden ?
 
-      <>
-      {/* ===== Volver al formulario ===== */}
-      <Button onClick={() => { setShowPDF(false) }} color="inherit" style={{ margin: 10 }} variant="outlined" startIcon={<ArrowBackIcon />}>Volver al formulario</Button>
+        <>
+          {/* ===== Volver al formulario ===== */}
+          <Button onClick={() => { setShowPDF(false) }} color="inherit" style={{ margin: 10 }} variant="outlined" startIcon={<ArrowBackIcon />}>Volver al formulario</Button>
 
-       <PDFViewer style={{width: '100%', height:'100vh'}}>
-          <OrdenPdf orden={orden} setShowPDF={setShowPDF} />
-        </PDFViewer>
-      </>
-        
-       
+          {ordenDetail ?
+            <PDFViewer style={{ width: '100%', height: '100vh' }}>
+              <OrdenPdf orden={ordenDetail} />
+            </PDFViewer> : null
+          }
+        </>
+
+
 
         :
         <div style={{ width: '100%', background: 'white', minHeight: 400 }}>
@@ -265,8 +289,8 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
               sucursal: orden && orden.sucursal ? orden.sucursal._id : '',
               doctor: orden && orden.doctor ? orden.doctor._id : '',
               fecha: orden && orden.fecha ? orden.fecha : Date.now(),
-              fecha_compromiso: orden  && orden.fecha_compromiso ? orden.fecha_compromiso : '',
-              vendedor: orden && orden.vendedor ? orden.vendedor.id : vendedor,
+              fecha_compromiso: orden && orden.fecha_compromiso ? orden.fecha_compromiso : '',
+              vendedor: orden && orden.vendedor ? orden.vendedor._id : vendedor,
               createdAt: orden && orden.createdAt ? orden.createdAt : Date.now(),
               comentarios: orden && orden.comentarios ? orden.comentarios : '',
               estatus: orden ? orden.estatus : true,
@@ -287,40 +311,74 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                     textAlign: 'right'
                   }}>
 
+
                     {/* ===== Botón: Imprimir ===== */}
                     {orden ?
-                      <Button onClick={() => { setShowPDF(true) }} color="inherit" style={{ margin: 10 }} variant="outlined" endIcon={<PrintIcon />}>Imprimir</Button> : null
+                      <Button disabled={loading} onClick={() => { setShowPDF(true) }} color="inherit" style={{ margin: 10 }} variant="outlined" endIcon={<PrintIcon />}>Imprimir</Button> : null
                     }
 
                     {/* ===== Botón: Cancelar ===== */}
-                    <Button onClick={cancel} style={{ margin: 10 }} variant="outlined" endIcon={<DeleteIcon />} color="error">Cancelar</Button>
+                    <Button disabled={loading} onClick={cancel} style={{ margin: 10 }} variant="outlined" endIcon={<DeleteIcon />} color="error">Cancelar</Button>
 
                     {/* ===== Botón: Crear Orden ===== */}
-                    <Button disabled={isSubmitting} type="submit" style={{ margin: 10 }} variant="outlined" endIcon={<SaveIcon />}>{orden ? 'Actualizar Orden' : 'Crear Orden'}</Button>
+                    {loading ?
+                      <LoadingButton
+                        style={{ margin: 10, width: 170, height: 36 }}
+                        loading={loading}
+                        variant="outlined"
+                        disabled
+                      >
+                        Cargando
+                      </LoadingButton> :
+                      <>
+
+                        <Button type="submit" style={{ margin: 10, width: 170 }} variant="outlined" endIcon={<SaveIcon />}>{orden ? 'Actualizar Orden' : 'Crear Orden'}</Button>
+                      </>
+
+
+                    }
+
+
+
                   </div>
                 </MainCard>
 
                 <Grid style={{ padding: 10 }} container spacing="2">
 
                   {/* ======== Cliente ======= */}
-                  {!orden ?
-                    <Grid item xs={6}>
-                      <Item>
-                        <Dropcliente
-                          required
-                          HandleBlur={handleBlur}
-                          Errors={errors}
-                          Touched={touched}
-                          Id="cliente"
-                          SetFieldValue={setFieldValue}
-                          Label="Cliente"
-                          Value={values.cliente}
-                          Onchange={(value) => { setFieldValue('cliente', value); }}
-                        />
-                      </Item>
-                    </Grid> : null
-                  }
 
+                  <Grid item xs={6}>
+                    <Item>
+                      <Dropcliente
+                        required
+                        HandleBlur={handleBlur}
+                        Errors={errors}
+                        Touched={touched}
+                        Id="cliente"
+                        SetFieldValue={setFieldValue}
+                        Label="Cliente"
+                        Value={values.cliente}
+                        Onchange={(value) => { setFieldValue('cliente', value); }}
+                        disabled={orden ? true : false}
+                      />
+                    </Item>
+                  </Grid>
+
+                  {/* ======== Vendedor ======= */}
+                  <Grid item xs={6}>
+                    <Item>
+                      <DropVendedor
+                        Id="vendedor"
+                        SetFieldValue={setFieldValue}
+                        Value={values.vendedor}
+                        Label="Vendedor"
+                        Errors={errors}
+                        Touched={touched}
+                        OnBlur={handleBlur}
+                        disabled={true}
+                      />
+                    </Item>
+                  </Grid>
 
                   {/* ======== Sucursal ======= */}
                   <Grid item xs={6}>
@@ -379,20 +437,7 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                   </Grid>
 
 
-                  {/* ======== Vendedor ======= */}
-                  {/* <Grid item xs={6}>
-                <Item>
-                  <DropVendedor
-                    Id="vendedor"
-                    SetFieldValue={setFieldValue}
-                    Value={values.vendedor}
-                    Label="Vendedor"
-                    Errors={errors}
-                    Touched={touched}
-                    OnBlur={handleBlur}
-                  />
-                </Item>
-              </Grid> */}
+
 
                   {/* ======== Estatus ======= */}
                   <Grid item xs={6}>
@@ -439,8 +484,8 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
 
 
 
-                {/* =============== Ártículos ============== */}
-                <MainCard title='Ártículos'>
+                {/* =============== Artículos ============== */}
+                <MainCard title='Artículos'>
                   <div style={{
                     padding: 10
                   }}>
@@ -680,7 +725,7 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                       variant="outlined"
                       endIcon={<AddCircleTwoToneIcon />}
                     >
-                      Agregar Árticulo
+                      Agregar Artículo
                     </Button>
                   </div>
                 </MainCard>

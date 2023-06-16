@@ -11,7 +11,7 @@ import { dispatch } from '../index';
 const initialState = {
     error: null,
     ordenes: [],
-    orden: [],
+    ordenDetail: [],
     addresses: []
 };
 
@@ -30,7 +30,7 @@ const slice = createSlice({
         },
         // GET ORDEN
         getById(state, action) {
-            state.orden = action.payload;
+            state.ordenDetail = action.payload;
         }
     }
 });

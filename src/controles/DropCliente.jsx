@@ -39,7 +39,8 @@ export default function Dropcliente({
     OnBlur,
     Onchange,
     SetDatosCliente,
-    required
+    required,
+    disabled
 }) {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [scroll, setScroll] = React.useState('paper');
@@ -145,6 +146,7 @@ export default function Dropcliente({
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Autocomplete
+                    disabled={disabled}
                     id={Id}
                     open={open}
                     onOpen={() => {
@@ -192,9 +194,11 @@ export default function Dropcliente({
                                     <>
                                         {loading ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
-                                        <IconButton size="small" onClick={handleClickOpen} aria-label="Agregar">
-                                            <AddCircleTwoToneIcon size="small" titleAccess="Agregar" fontSize="small" />
-                                        </IconButton>
+                                        {!disabled ?
+                                            <IconButton size="small" onClick={handleClickOpen} aria-label="Agregar">
+                                                <AddCircleTwoToneIcon size="small" titleAccess="Agregar" fontSize="small" />
+                                            </IconButton> : null
+                                       }
                                     </>
                                 )
                             }}

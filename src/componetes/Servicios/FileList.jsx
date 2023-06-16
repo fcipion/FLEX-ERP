@@ -97,7 +97,7 @@ const FileList = ({ fileListOpen, setFileListOpen, row, handleChangeValue, setFi
                             }
                         >
                             <ListItemText
-                                primary={`${index + 1}. ` + file.name}
+                                primary={`${index + 1}. ` + (file.name ? file.name : 'imagen')}
                             />
                         </ListItem>
 

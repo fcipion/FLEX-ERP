@@ -29,7 +29,7 @@ function sleep(delay = 0) {
     });
 }
 
-export default function DropVendedor({ Id, SetFieldValue, Value, SetValue, Label, Errors, Touched, OnBlur }) {
+export default function DropVendedor({ Id, SetFieldValue, Value, SetValue, Label, Errors, Touched, OnBlur, disabled }) {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [scroll, setScroll] = React.useState('paper');
     const [open, setOpen] = React.useState(false);
@@ -131,6 +131,7 @@ export default function DropVendedor({ Id, SetFieldValue, Value, SetValue, Label
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Autocomplete
+                    disabled={disabled}
                     id={Id}
                     open={open}
                     onOpen={() => {
@@ -169,9 +170,12 @@ export default function DropVendedor({ Id, SetFieldValue, Value, SetValue, Label
                                     <>
                                         {loading ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
-                                        <IconButton size="small" onClick={handleClickOpen} aria-label="Agregar">
-                                            <AddCircleTwoToneIcon size="small" titleAccess="Agregar" fontSize="small" />
-                                        </IconButton>
+                                        {disabled ?
+                                            <IconButton size="small" onClick={handleClickOpen} aria-label="Agregar">
+                                                <AddCircleTwoToneIcon size="small" titleAccess="Agregar" fontSize="small" />
+                                            </IconButton> : null
+                                        }
+
                                     </>
                                 )
                             }}
