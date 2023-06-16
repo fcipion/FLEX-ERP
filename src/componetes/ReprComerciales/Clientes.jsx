@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TextField, Grid, Divider, FormControl, InputAdornment, Card, Alert, FormControlLabel } from '@mui/material';
+import { TextField, Grid, Divider, FormControl, InputAdornment, Card, Alert, FormControlLabel, Avatar } from '@mui/material';
 import * as Yup from 'yup';
 import CrudControl from 'controles/CrudControl';
 import MainCard from 'ui-component/cards/MainCard';
@@ -40,11 +40,10 @@ import DropTipoDocumentos from 'controles/DropTipoDocumentos';
 import DropTerminoPago from 'controles/DropTerminoPago';
 import DropVendedor from 'controles/DropVendedor';
 import DropTipoClientes from 'controles/DropTipoClientes';
-import { useFetchPersonData } from '../../hooks/useFetchClient';
+import { useFetchPersonData } from '../../hooks/useFetchPerson';
 
 const formSchema = Yup.object().shape({
     tipo_cliente: Yup.string().required('Requerido'),
-    nombre: Yup.string().required('Requerido'),
     vendedor: Yup.string().required('Requerido'),
     tipo_documento: Yup.string().required('Requerido'),
     documento: Yup.string()
@@ -310,7 +309,17 @@ const Clientes = () => {
                                 getPerson(values.documento.replace(/-/g, ''));
                             }
                         }, [values.documento]);
-                        const personName = personData?.nombre || '';
+                        // eslint-disable-next-line react-hooks/rules-of-hooks
+                        useEffect(() => {
+                            if (personData) {
+                                setFieldValue('nombre', personData.nombre);
+                                setFieldValue('fecha_nacimiento', personData.fecha_nacimiento);
+                                setFieldValue('lugar_nacimiento', personData.lugar_nacimiento);
+                                setFieldValue('genero', personData.genero);
+                                setFieldValue('estado_civil', personData.estado_civil);
+                                setFieldValue('foto', personData.foto);
+                            }
+                        }, [personData]);
 
                         const handlerDelete = () => {
                             setModoAccion('delete');
@@ -388,25 +397,6 @@ const Clientes = () => {
                                                     opacity: modo === 'view' ? '0.60' : '100'
                                                 }}
                                             >
-                                                <Grid item xs={12}>
-                                                    <PatternFormat
-                                                        value={values.documento}
-                                                        id="documento"
-                                                        label="RNC/Cedula"
-                                                        fullWidth
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        error={errors.documento && touched.documento}
-                                                        helperText={touched.documento && errors.documento}
-                                                        renderInput={(params) => <TextField {...params} />}
-                                                        format="###-#######-#"
-                                                        mask="_"
-                                                        customInput={TextField}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Divider />
-                                                </Grid>
                                                 <Grid item xs={6}>
                                                     <DropTipoDocumentos
                                                         Id="tipo_documento"
@@ -419,20 +409,100 @@ const Clientes = () => {
                                                     />
                                                 </Grid>
                                                 <Grid item xs={6}>
+                                                    <PatternFormat
+                                                        value={values.documento}
+                                                        id="documento"
+                                                        label="RNC/Cedula"
+                                                        fullWidth
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        error={errors.documento && touched.documento}
+                                                        helperText={
+                                                            (touched.documento && errors.documento) ||
+                                                            'Selecciona un tipo de documento primero'
+                                                        }
+                                                        renderInput={(params) => <TextField {...params} />}
+                                                        format="###-#######-#"
+                                                        mask="_"
+                                                        customInput={TextField}
+                                                        disabled={!values.tipo_documento}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <Divider>
+                                                        Estos campos serán llenados automaticamente al introducir la cédula del cliente
+                                                    </Divider>
+                                                </Grid>
+                                                <Grid item xs={6}>
                                                     <TextField
-                                                        value={personName}
+                                                        value={values.nombre}
                                                         id="nombre"
                                                         name="nombre"
                                                         fullWidth
-                                                        label={personName ? '' : 'Nombre'}
+                                                        label={values.nombre ? '' : 'Nombre'}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         error={errors.nombre && touched.nombre}
                                                         helperText={touched.nombre && errors.nombre}
+                                                        disabled
                                                     />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TextField
+                                                        value={values.fecha_nacimiento}
+                                                        id="fecha_nacimiento"
+                                                        name="fecha_nacimiento"
+                                                        fullWidth
+                                                        label={values.fecha_nacimiento ? '' : 'Fecha de nacimiento'}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        disabled
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TextField
+                                                        value={values.lugar_nacimiento}
+                                                        id="lugar_nacimiento"
+                                                        name="lugar_nacimiento"
+                                                        fullWidth
+                                                        label={values.lugar_nacimiento ? '' : 'Lugar de nacimiento'}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        disabled
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TextField
+                                                        value={values.genero}
+                                                        id="genero"
+                                                        name="genero"
+                                                        fullWidth
+                                                        label={values.genero ? '' : 'Genero'}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        disabled
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TextField
+                                                        value={values.estado_civil}
+                                                        id="estado_civil"
+                                                        name="estado_civil"
+                                                        fullWidth
+                                                        label={values.genero ? '' : 'Estado civil'}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        disabled
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={6} justifyContent="center">
+                                                    {values.foto && <img src={values.foto} alt={values.nombre || 'Foto de persona'} />}
                                                 </Grid>
                                                 <Grid item xs={12}>
                                                     <Divider />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <Divider>Otros datos</Divider>
                                                 </Grid>
                                                 <Grid item xs={6}>
                                                     <TextField
