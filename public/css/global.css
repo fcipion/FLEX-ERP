@@ -1,0 +1,18 @@
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-file {
+  background-color: #f2f6fc;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.card-file:hover {
+  background-color: #cecece;
+}

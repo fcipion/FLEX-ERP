@@ -1,238 +1,197 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from "react";
 import { formSchema } from "./schemas/index";
-import MainCard from 'ui-component/cards/MainCard';
-import { useSelector, dispatch } from 'store';
-import { getOrdenById } from 'store/slices/orden';
+import MainCard from "ui-component/cards/MainCard";
+import { useSelector, dispatch } from "store";
+import { getOrdenById } from "store/slices/orden";
+import {
+  changeStatusModalUpload,
+  addMultipleUploadFile,
+} from "store/slices/file";
 
 // ======== MUI ==========
-import { Button, Grid, TextField, IconButton } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { Button, Grid, TextField, IconButton } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 // ======= Icons ========
-import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import PrintIcon from '@mui/icons-material/Print';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddCircleTwoToneIcon from "@mui/icons-material/AddCircleTwoTone";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import PrintIcon from "@mui/icons-material/Print";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import CollectionsOutlinedIcon from "@mui/icons-material/CollectionsOutlined";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 // ====== Formik =======
 import { Form, Formik } from "formik";
 
 // ====== Drops =======
-import DropSucursal from 'controles/DropSucursal';
-import Dropcliente from 'controles/DropCliente';
-import DropDoctores from 'controles/DropDoctores';
-import DropVendedor from 'controles/DropVendedor';
-import DropProductos from 'controles/DropProductos';
-import DropUnidadMedida from 'controles/DropUnidadMedida';
-import DropAlmacen from 'controles/DropAlmacen';
-import DropEstado from 'controles/DropEstado';
+import DropSucursal from "controles/DropSucursal";
+import Dropcliente from "controles/DropCliente";
+import DropDoctores from "controles/DropDoctores";
+import DropVendedor from "controles/DropVendedor";
+import DropProductos from "controles/DropProductos";
+import DropUnidadMedida from "controles/DropUnidadMedida";
+import DropAlmacen from "controles/DropAlmacen";
+import DropEstado from "controles/DropEstado";
+import FileManager from "../app/FileManager";
 
 // ====== Galeria =====
-import ModalGaleria from './ModalGaleria';
+import ModalGaleria from "./ModalGaleria";
 
 // ====== Componentes =====
-import FileList from './FileList';
-import OrdenPdf from './OrdenPdf';
+import FileList from "./FileList";
+import OrdenPdf from "./OrdenPdf";
 
 // ====== Estilos =====
-import './Orden.css'
+import "./Orden.css";
 
 // ====== Request =====
-import axios from 'utils/axios';
-import { url } from '../../api/Peticiones';
-
+import axios from "utils/axios";
+import { url } from "../../api/Peticiones";
 
 // ====== PDF =====
-import { PDFViewer } from '@react-pdf/renderer';
+import { PDFViewer } from "@react-pdf/renderer";
+
+import servicioProvider from "../../providers/server/servicio";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  color: theme.palette.text.secondary
+  color: theme.palette.text.secondary,
 }));
 
-
-const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }) => {
-
-  const vendedor = JSON.parse(localStorage.getItem('userData')).sub
+const AddUpdateOrden = ({
+  setShowForm,
+  setError,
+  orden,
+  setOrden,
+  setOpenAlert,
+}) => {
+  const vendedor = JSON.parse(localStorage.getItem("userData")).sub;
   const { ordenDetail } = useSelector((state) => state.orden);
 
-  // ===== setear orden ====
   useEffect(() => {
+    if (!orden) return;
 
-    if (orden) {
-      setDataRows([...orden.detalles])
-      dispatch(getOrdenById(orden._id))
-      console.log('============orden', ordenDetail);
-    }
-
-  }, [orden])
+    setDataRows(orden);
+    dispatch(getOrdenById(orden._id));
+  }, [orden]);
 
   const onSubmit = async (values, actions) => {
-    console.log('========== Valores =========', values);
-
-    if (values.detalles.length) submitOrden(values, actions)
-    else showError('Agrega al menos un producto')
+    if (values.detalles.length) return submitOrden(values, actions);
+    showError("Agrega al menos un producto");
   };
-
 
   // ========== Crear Orden =========
   const submitOrden = async (values, actions) => {
+    let data = servicioProvider.formatDataOrder(vendedor, values);
+    let response = {};
 
-    let formdata = new FormData();
+    setLoading(true);
 
-    formdata.append("sucursal", values.sucursal);
-    formdata.append("cliente", values.cliente);
-    formdata.append("doctor", values.doctor);
-    formdata.append("vendedor", vendedor);
-    formdata.append("comentarios", values.comentarios);
-    formdata.append("fecha", values.fecha);
-    formdata.append("fecha_compromiso", values.fecha_compromiso);
-    formdata.append("estatus", values.estatus);
-    formdata.append("compania", '');
-    formdata.append('detalles', JSON.stringify(values.detalles));
-
-    values.detalles.forEach(function (detalle, indice) {
-      var galeria = detalle.galeria;
-      galeria.forEach(function (imagen, indiceImagen) {
-        if (typeof imagen !== 'string') {
-          var fieldName = 'galeria_' + detalle.line_id;
-          formdata.append(fieldName, imagen);
-        }
-      });
-    });
-
-    // =========== Actualizar Orden ==============
     if (orden) {
-      setLoading(true)
-      await axios.put(`${url}/actualizar_orden_servicio/${orden._id}`, formdata).then(res => {
-        cancel()
-        setOpenAlert(true)
-        setLoading(false)
-        actions.resetForm();
-
-      }).catch((error) => {
-        setLoading(false)
-        console.log('error', error);
-        showError('Hay campos vacíos. Completa todos los campos del formulario');
-      })
+      response = await servicioProvider.updateOrder(orden._id, data);
+    } else {
+      response = await servicioProvider.create(data);
     }
 
-    // =========== Crear Orden ==============
-    else {
-      setLoading(true)
-      await axios.post(`${url}/registro_orden_servicio`, formdata).then(res => {
-        cancel()
-        setOpenAlert(true)
-        setLoading(false)
-        actions.resetForm();
-      }).catch((error) => {
-        console.log('error', error);
-        showError('Hay campos vacíos. Completa todos los campos del formulario');
-        setLoading(false)
-      })
-
+    if (response.error) {
+      setLoading(false);
+      return showError(
+        "Hay campos vacíos. Completa todos los campos del formulario"
+      );
     }
 
-  }
+    // cancel();
+    // setOpenAlert(true);
+    setLoading(false);
+    dispatch(changeStatusModalUpload(true));
 
+    Array.from(values.detalles || []).forEach((detalle) => {
+      if (!Array.isArray(detalle.galeria)) return;
+      let files = Array.from(detalle.galeria).filter(
+        (file) => file instanceof File
+      );
+      if (!files.length) return;
+
+      dispatch(
+        addMultipleUploadFile({
+          files,
+          reference: detalle.uuid,
+          orderId: response.data._id,
+        })
+      );
+    });
+  };
 
   // ===== Mostrar Error ======
   const showError = (error) => {
-    setOpenAlert(true)
-    setError(error)
-    setTimeout(() => { setError('') }, 4000);
-  }
+    setOpenAlert(true);
+    setError(error);
+    setTimeout(() => {
+      setError("");
+    }, 4000);
+  };
 
   // ===== Salir del formulario ====
   const cancel = () => {
-    setShowForm(false)
-    setOrden(null)
-  }
+    setShowForm(false);
+    setOrden(null);
+  };
 
-  // ==== Loading ====
   const [loading, setLoading] = useState(false);
-
-  // ==== Galeria ====
   const [openGallery, setOpenGallery] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
-
-  // ==== Lista de archivos ====
-  const [fileListOpen, setFileListOpen] = useState({ line_id: '', isOpen: false });
-
-  // ==== Generar Url para visualizar cada imagen en la galeria ====
-  const imagesPreview = async (files) => {
-    if (!files) return;
-
-    let urls = []
-
-    if (orden) {
-      for (let file of files) {
-        urls.push({ src: `${url}/obtener_orden_servicio_img/${file}` })
-      }
-
-      setGalleryImages(urls);
-      setOpenGallery(true)
-
-    } else {
-      let tmp = [];
-      for (let i = 0; i < files.length; i++) {
-        tmp.push({ src: URL.createObjectURL(files[i]) });
-      }
-      const objectUrls = tmp;
-      setGalleryImages(objectUrls);
-      setOpenGallery(true)
-
-      for (let i = 0; i < objectUrls.length; i++) {
-        return () => {
-          URL.revokeObjectURL(objectUrls[i]);
-        };
-      }
-    }
-
-  }
-
-  // ==== Mostrar PDF ====
+  const [fileListOpen, setFileListOpen] = useState({
+    line_id: "",
+    isOpen: false,
+    index: null,
+  });
   const [showPDF, setShowPDF] = useState(false);
-
-  // ==== Artículos ====
   const [dataRows, setDataRows] = useState([]);
 
-  // ========== Agregar fila de Artículo ======
+  const generateUUIDTMP = useCallback(() => {
+    let running = true;
+
+    do {
+      let uuid = crypto.randomUUID();
+      let exist = dataRows.find((d) => d.uuid == uuid);
+      if (!exist) return uuid;
+    } while (running);
+  }, [dataRows]);
+
   const addValues = () => {
     setDataRows((previewRows) => {
       const data = {
+        uuid: generateUUIDTMP(),
         line_id: previewRows.length + 1,
-        producto: '',
+        producto: "",
         cantidad: 0,
         repetida: false,
         estatus: true,
         galeria: [],
-        unidad_medida: '',
-        almacen: '',
-        estado: '',
-        comentarios: ''
+        unidad_medida: "",
+        almacen: "",
+        estado: "",
+        comentarios: "",
       };
       return [...previewRows, data];
     });
@@ -240,14 +199,18 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
 
   // ========== Eliminar fila de Artículo ======
   const deleteValues = (row, setFieldValue) => {
-    setDataRows((previewRows) => [...previewRows.filter((Row) => Row.line_id !== row.line_id)]);
-    if (row.line_id == 1) setFieldValue('detalles', []);
-    else setFieldValue('detalles', dataRows);
+    setDataRows((previewRows) => [
+      ...previewRows.filter((Row) => Row.line_id !== row.line_id),
+    ]);
+    if (row.line_id == 1) setFieldValue("detalles", []);
+    else setFieldValue("detalles", dataRows);
   };
 
   // ========== Actualizar cambio en fila de Artículo ======
   const handleChangeValue = (value, row, SetFieldValue, id) => {
-    const indexRow = dataRows.findIndex((dataRow) => dataRow.line_id === row.line_id);
+    const indexRow = dataRows.findIndex(
+      (dataRow) => dataRow.line_id === row.line_id
+    );
 
     setDataRows((previewRows) => {
       previewRows[indexRow][id] = value;
@@ -255,73 +218,137 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
       return [...previewRows];
     });
 
-    console.log('======= la data row ======', dataRows);
-    SetFieldValue('detalles', dataRows);
+    SetFieldValue("detalles", dataRows);
   };
 
+  const handleOpenManage = useCallback((index, row) => {
+    setFileListOpen({ isOpen: true, line_id: row.line_id, index });
+  }, []);
+
+  const handleSetListFiles = useCallback(
+    (files) => {
+      setDataRows(
+        dataRows.map((row, i) => {
+          i == fileListOpen.index && (row.galeria = files);
+          return row;
+        })
+      );
+      setFileListOpen({ line_id: "", isOpen: false, index: null });
+    },
+    [fileListOpen, dataRows]
+  );
 
   return (
-    <>
-      {showPDF && orden ?
-
+    <React.Fragment>
+      {showPDF && orden ? (
         <>
           {/* ===== Volver al formulario ===== */}
-          <Button onClick={() => { setShowPDF(false) }} color="inherit" style={{ margin: 10 }} variant="outlined" startIcon={<ArrowBackIcon />}>Volver al formulario</Button>
+          <Button
+            onClick={() => {
+              setShowPDF(false);
+            }}
+            color="inherit"
+            style={{ margin: 10 }}
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
+          >
+            Volver al formulario
+          </Button>
 
-          {ordenDetail ?
-            <PDFViewer style={{ width: '100%', height: '100vh' }}>
+          {ordenDetail ? (
+            <PDFViewer style={{ width: "100%", height: "100vh" }}>
               <OrdenPdf orden={ordenDetail} />
-            </PDFViewer> : null
-          }
+            </PDFViewer>
+          ) : null}
         </>
-
-
-
-        :
-        <div style={{ width: '100%', background: 'white', minHeight: 400 }}>
-
+      ) : (
+        <div
+          style={{
+            width: "100%",
+            background: "white",
+            minHeight: 400,
+            position: "relative",
+          }}
+        >
+          <FileManager
+            show={fileListOpen.isOpen}
+            handleSetListFiles={handleSetListFiles}
+            items={dataRows[fileListOpen.index]?.galeria || []}
+          />
           {/* ======= Formulario ====== */}
 
           <Formik
             initialValues={{
-              cliente: orden && orden.cliente ? orden.cliente._id : '',
-              compania: orden && orden.compania ? orden.compania._id : '',
-              sucursal: orden && orden.sucursal ? orden.sucursal._id : '',
-              doctor: orden && orden.doctor ? orden.doctor._id : '',
+              cliente: orden && orden.cliente ? orden.cliente._id : "",
+              compania: orden && orden.compania ? orden.compania._id : "",
+              sucursal: orden && orden.sucursal ? orden.sucursal._id : "",
+              doctor: orden && orden.doctor ? orden.doctor._id : "",
               fecha: orden && orden.fecha ? orden.fecha : Date.now(),
-              fecha_compromiso: orden && orden.fecha_compromiso ? orden.fecha_compromiso : '',
+              fecha_compromiso:
+                orden && orden.fecha_compromiso ? orden.fecha_compromiso : "",
               vendedor: orden && orden.vendedor ? orden.vendedor._id : vendedor,
-              createdAt: orden && orden.createdAt ? orden.createdAt : Date.now(),
-              comentarios: orden && orden.comentarios ? orden.comentarios : '',
+              createdAt:
+                orden && orden.createdAt ? orden.createdAt : Date.now(),
+              comentarios: orden && orden.comentarios ? orden.comentarios : "",
               estatus: orden ? orden.estatus : true,
-              detalles: orden ? orden.detalles : dataRows
+              detalles: orden ? orden.detalles : dataRows,
             }}
             validationSchema={formSchema}
             onSubmit={onSubmit}
           >
-            {({ values, errors, touched, isSubmitting, setFieldValue, handleChange, handleSubmit, handleBlur }) => (
+            {({
+              values,
+              errors,
+              touched,
+              isSubmitting,
+              setFieldValue,
+              handleChange,
+              handleSubmit,
+              handleBlur,
+            }) => (
               <Form>
-
                 {/* ================= Header ================= */}
-                <MainCard title={orden ? "Actualizar Orden" : "Registrar nueva orden"}>
-                  <div style={{
-                    backgroundColor: '#e3f2fd',
-                    borderRadius: '5px',
-                    border: '1px solid #e3f2fd',
-                    textAlign: 'right'
-                  }}>
-
-
+                <MainCard
+                  title={orden ? "Actualizar Orden" : "Registrar nueva orden"}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "#e3f2fd",
+                      borderRadius: "5px",
+                      border: "1px solid #e3f2fd",
+                      textAlign: "right",
+                    }}
+                  >
                     {/* ===== Botón: Imprimir ===== */}
-                    {orden ?
-                      <Button disabled={loading} onClick={() => { setShowPDF(true) }} color="inherit" style={{ margin: 10 }} variant="outlined" endIcon={<PrintIcon />}>Imprimir</Button> : null
-                    }
+                    {orden ? (
+                      <Button
+                        disabled={loading}
+                        onClick={() => {
+                          setShowPDF(true);
+                        }}
+                        color="inherit"
+                        style={{ margin: 10 }}
+                        variant="outlined"
+                        endIcon={<PrintIcon />}
+                      >
+                        Imprimir
+                      </Button>
+                    ) : null}
 
                     {/* ===== Botón: Cancelar ===== */}
-                    <Button disabled={loading} onClick={cancel} style={{ margin: 10 }} variant="outlined" endIcon={<DeleteIcon />} color="error">Cancelar</Button>
+                    <Button
+                      disabled={loading}
+                      onClick={cancel}
+                      style={{ margin: 10 }}
+                      variant="outlined"
+                      endIcon={<DeleteIcon />}
+                      color="error"
+                    >
+                      Cancelar
+                    </Button>
 
                     {/* ===== Botón: Crear Orden ===== */}
-                    {loading ?
+                    {loading ? (
                       <LoadingButton
                         style={{ margin: 10, width: 170, height: 36 }}
                         loading={loading}
@@ -329,22 +356,23 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                         disabled
                       >
                         Cargando
-                      </LoadingButton> :
+                      </LoadingButton>
+                    ) : (
                       <>
-
-                        <Button type="submit" style={{ margin: 10, width: 170 }} variant="outlined" endIcon={<SaveIcon />}>{orden ? 'Actualizar Orden' : 'Crear Orden'}</Button>
+                        <Button
+                          type="submit"
+                          style={{ margin: 10, width: 170 }}
+                          variant="outlined"
+                          endIcon={<SaveIcon />}
+                        >
+                          {orden ? "Actualizar Orden" : "Crear Orden"}
+                        </Button>
                       </>
-
-
-                    }
-
-
-
+                    )}
                   </div>
                 </MainCard>
 
                 <Grid style={{ padding: 10 }} container spacing="2">
-
                   {/* ======== Cliente ======= */}
 
                   <Grid item xs={6}>
@@ -358,7 +386,9 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                         SetFieldValue={setFieldValue}
                         Label="Cliente"
                         Value={values.cliente}
-                        Onchange={(value) => { setFieldValue('cliente', value); }}
+                        Onchange={(value) => {
+                          setFieldValue("cliente", value);
+                        }}
                         disabled={orden ? true : false}
                       />
                     </Item>
@@ -392,11 +422,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                         SetFieldValue={setFieldValue}
                         Label="Sucursal"
                         Value={values.sucursal}
-                        Onchange={(value) => { }}
+                        Onchange={(value) => {}}
                       />
                     </Item>
                   </Grid>
-
 
                   {/* ======== Fecha ======= */}
                   <Grid item xs={6}>
@@ -409,15 +438,24 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                           onBlur={handleBlur}
                           fullWidth
                           required
-                          onChange={(value) => { setFieldValue('fecha_compromiso', (new Date(value.toDate())).getTime()); }}
+                          onChange={(value) => {
+                            setFieldValue(
+                              "fecha_compromiso",
+                              new Date(value.toDate()).getTime()
+                            );
+                          }}
                           renderInput={(params) => (
-                            <TextField size="small" fullWidth {...params} required />
+                            <TextField
+                              size="small"
+                              fullWidth
+                              {...params}
+                              required
+                            />
                           )}
                         />
                       </LocalizationProvider>
                     </Item>
                   </Grid>
-
 
                   {/* ======== Doctor ======= */}
                   <Grid item xs={6}>
@@ -431,13 +469,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                         Label="Doctor"
                         required
                         Value={values.doctor}
-                        Onchange={(value) => { }}
+                        Onchange={(value) => {}}
                       />
                     </Item>
                   </Grid>
-
-
-
 
                   {/* ======== Estatus ======= */}
                   <Grid item xs={6}>
@@ -450,7 +485,9 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                           nombre="estatus"
                           value={values.estatus}
                           label="Estatus"
-                          onChange={(event) => { setFieldValue('estatus', event.target.value); }}
+                          onChange={(event) => {
+                            setFieldValue("estatus", event.target.value);
+                          }}
                         >
                           <MenuItem value={true}>Activo</MenuItem>
                           <MenuItem value={false}>Inactivo</MenuItem>
@@ -458,7 +495,6 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                       </FormControl>
                     </Item>
                   </Grid>
-
 
                   {/* ======== Comentarios ======= */}
                   <Grid item xs={6}>
@@ -471,36 +507,41 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                         multiline
                         size="small"
                         label="Comentarios"
-                        onChange={(event) => { setFieldValue('comentarios', event.target.value); }}
-                        onBlur={(value) => { }}
+                        onChange={(event) => {
+                          setFieldValue("comentarios", event.target.value);
+                        }}
+                        onBlur={(value) => {}}
                         error={errors.comentarios && touched.comentarios}
                         helperText={touched.comentarios && errors.comentarios}
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </Item>
                   </Grid>
-
                 </Grid>
 
-
-
                 {/* =============== Artículos ============== */}
-                <MainCard title='Artículos'>
-                  <div style={{
-                    padding: 10
-                  }}>
+                <MainCard title="Artículos">
+                  <div
+                    style={{
+                      padding: 10,
+                    }}
+                  >
                     <Grid item xs={12}>
-                      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                        <TableContainer component={Paper} sx={{ maxHeight: 390 }}>
+                      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+                        <TableContainer
+                          component={Paper}
+                          sx={{ maxHeight: 390 }}
+                        >
                           <Table
                             sx={{ minWidth: 1650 }}
                             size="small"
                             aria-label="a dense table"
                           >
-
                             {/* =========== Tabla Header ======= */}
                             <TableHead>
-                              <TableRow style={{ backgroundColor: 'ButtonFace' }}>
+                              <TableRow
+                                style={{ backgroundColor: "ButtonFace" }}
+                              >
                                 <TableCell>Artículo</TableCell>
                                 <TableCell>Unidad Medida</TableCell>
                                 <TableCell>Almacen</TableCell>
@@ -509,24 +550,24 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                 <TableCell align="center">Imágenes</TableCell>
                                 <TableCell align="center">Repetida</TableCell>
                                 <TableCell align="center">Estatus</TableCell>
-                                <TableCell align="center">Comentarios</TableCell>
+                                <TableCell align="center">
+                                  Comentarios
+                                </TableCell>
                                 <TableCell align="center">Eliminar</TableCell>
                               </TableRow>
                             </TableHead>
 
-
                             {/* =========== Tabla Body ======= */}
                             <TableBody>
-                              {dataRows.map((row) => (
+                              {dataRows.map((row, i) => (
                                 <TableRow
                                   key={row.line_id}
                                   sx={{
-                                    '&:last-child td, &:last-child th': {
-                                      border: 0
-                                    }
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
                                   }}
                                 >
-
                                   {/* =========== Producto ======= */}
                                   <TableCell
                                     style={{ width: 50 }}
@@ -549,7 +590,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                   </TableCell>
 
                                   {/* ============= Unidad de Medida ============= */}
-                                  <TableCell style={{ width: 200 }} align="right">
+                                  <TableCell
+                                    style={{ width: 200 }}
+                                    align="right"
+                                  >
                                     <DropUnidadMedida
                                       HandleBlur={handleBlur}
                                       Errors={errors}
@@ -565,7 +609,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                   </TableCell>
 
                                   {/* ============= Almacen ============= */}
-                                  <TableCell style={{ width: 200 }} align="right">
+                                  <TableCell
+                                    style={{ width: 200 }}
+                                    align="right"
+                                  >
                                     <DropAlmacen
                                       HandleBlur={handleBlur}
                                       Errors={errors}
@@ -582,7 +629,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                   </TableCell>
 
                                   {/* ============= Estado ============= */}
-                                  <TableCell style={{ width: 200 }} align="right">
+                                  <TableCell
+                                    style={{ width: 200 }}
+                                    align="right"
+                                  >
                                     <DropEstado
                                       HandleBlur={handleBlur}
                                       Errors={errors}
@@ -592,14 +642,24 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                       SetFieldValue={setFieldValue}
                                       Label=""
                                       Value={row.estado}
-                                      Onchange={(value) => { handleChangeValue(value, row, setFieldValue, 'estado'); }}
+                                      Onchange={(value) => {
+                                        handleChangeValue(
+                                          value,
+                                          row,
+                                          setFieldValue,
+                                          "estado"
+                                        );
+                                      }}
                                       Row={row}
                                       required
                                     />
                                   </TableCell>
 
                                   {/* ============= Cantidad ============= */}
-                                  <TableCell style={{ width: 100 }} align="right">
+                                  <TableCell
+                                    style={{ width: 100 }}
+                                    align="right"
+                                  >
                                     <Grid item xs={12}>
                                       <TextField
                                         fullWidth
@@ -609,7 +669,14 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                         label=""
                                         type="number"
                                         defaultValue={row.cantidad}
-                                        onBlur={(event) => { handleChangeValue(event.target.value, row, setFieldValue, 'cantidad'); }}
+                                        onBlur={(event) => {
+                                          handleChangeValue(
+                                            event.target.value,
+                                            row,
+                                            setFieldValue,
+                                            "cantidad"
+                                          );
+                                        }}
                                         size="small"
                                         required
                                       />
@@ -618,9 +685,8 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
 
                                   {/* ============= Agregar Imagen ============= */}
                                   <TableCell align="center">
-
                                     <Button
-                                      onClick={() => setFileListOpen({ isOpen: true, line_id: row.line_id })}
+                                      onClick={() => handleOpenManage(i, row)}
                                       size="small"
                                       variant="outlined"
                                       endIcon={<CollectionsOutlinedIcon />}
@@ -628,45 +694,59 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                       Gestionar
                                     </Button>
 
-
-                                    <FileList
+                                    {/* <FileList
                                       setFileListOpen={setFileListOpen}
                                       fileListOpen={fileListOpen}
                                       row={row}
                                       setFieldValue={setFieldValue}
                                       handleChangeValue={handleChangeValue}
                                       imagesPreview={imagesPreview}
-                                    />
-
+                                    /> */}
                                   </TableCell>
 
                                   {/* ============= Repetida ============= */}
                                   <TableCell align="center">
-
                                     <FormControlLabel
-                                      label={row.repetida ? 'Si' : 'No'}
+                                      label={row.repetida ? "Si" : "No"}
                                       control={
                                         <Switch
                                           id="repetida"
                                           name="repetida"
                                           defaultValue={row.repetida}
-                                          onChange={(event) => { handleChangeValue(event.target.checked, row, setFieldValue, 'repetida'); }}
-                                        />}
+                                          onChange={(event) => {
+                                            handleChangeValue(
+                                              event.target.checked,
+                                              row,
+                                              setFieldValue,
+                                              "repetida"
+                                            );
+                                          }}
+                                        />
+                                      }
                                     />
-
                                   </TableCell>
 
                                   {/* ============= Estatus ============= */}
                                   <TableCell align="center">
                                     <FormControlLabel
-                                      label={row.estatus ? 'Activo' : 'Inactivo'}
+                                      label={
+                                        row.estatus ? "Activo" : "Inactivo"
+                                      }
                                       control={
                                         <Switch
                                           id="estatus"
                                           name="estatus"
                                           defaultValue={row.estatus}
-                                          onChange={(event) => { handleChangeValue(event.target.checked, row, setFieldValue, 'estatus'); }}
-                                        />}
+                                          onChange={(event) => {
+                                            handleChangeValue(
+                                              event.target.checked,
+                                              row,
+                                              setFieldValue,
+                                              "estatus"
+                                            );
+                                          }}
+                                        />
+                                      }
                                     />
                                   </TableCell>
 
@@ -681,32 +761,46 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                                       multiline
                                       size="small"
                                       label=""
-                                      onChange={(event) => { handleChangeValue(event.target.value, row, setFieldValue, 'comentarios'); }}
-                                      onBlur={(value) => { }}
-                                      error={errors.comentarios && touched.comentarios}
-                                      helperText={touched.comentarios && errors.comentarios}
-                                      renderInput={(params) => <TextField {...params} />}
+                                      onChange={(event) => {
+                                        handleChangeValue(
+                                          event.target.value,
+                                          row,
+                                          setFieldValue,
+                                          "comentarios"
+                                        );
+                                      }}
+                                      onBlur={(value) => {}}
+                                      error={
+                                        errors.comentarios &&
+                                        touched.comentarios
+                                      }
+                                      helperText={
+                                        touched.comentarios &&
+                                        errors.comentarios
+                                      }
+                                      renderInput={(params) => (
+                                        <TextField {...params} />
+                                      )}
                                     />
-
                                   </TableCell>
-
 
                                   {/* ===== Eliminar Fila ===== */}
                                   <TableCell align="center">
                                     <Grid item xs={12}>
-
                                       <IconButton
                                         aria-label="Agregar"
-                                        style={{ width: '30px' }}
+                                        style={{ width: "30px" }}
                                       >
                                         <DeleteTwoToneIcon
-                                          onClick={() => { deleteValues(row, setFieldValue); setGalleryImages(row.galeria) }}
+                                          onClick={() => {
+                                            deleteValues(row, setFieldValue);
+                                            setGalleryImages(row.galeria);
+                                          }}
                                           titleAccess="Eliminar"
                                           fontSize="medium"
                                           color="error"
                                         />
                                       </IconButton>
-
                                     </Grid>
                                   </TableCell>
                                 </TableRow>
@@ -715,12 +809,13 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                           </Table>
                         </TableContainer>
                       </Paper>
-
                     </Grid>
                   </div>
-                  <div style={{ textAlign: 'center', padding: 10 }}>
+                  <div style={{ textAlign: "center", padding: 10 }}>
                     <Button
-                      onClick={() => { addValues(); }}
+                      onClick={() => {
+                        addValues();
+                      }}
                       size="small"
                       variant="outlined"
                       endIcon={<AddCircleTwoToneIcon />}
@@ -729,7 +824,6 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
                     </Button>
                   </div>
                 </MainCard>
-
 
                 <ModalGaleria
                   openGallery={openGallery}
@@ -740,14 +834,10 @@ const AddUpdateOrden = ({ setShowForm, setError, orden, setOrden, setOpenAlert }
               </Form>
             )}
           </Formik>
-
         </div>
-      }
-    </>
+      )}
+    </React.Fragment>
+  );
+};
 
-
-
-  )
-}
-
-export default AddUpdateOrden
+export default AddUpdateOrden;

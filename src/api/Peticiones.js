@@ -1,5 +1,5 @@
-// const url = 'http://10.42.0.252:4201/api';
-const url = 'http://integra3dapp-alexander.ddns.net/api';
+const url = "http://localhost:4201/api";
+// const url = 'http://integra3dapp-alexander.ddns.net/api';
 
 const Post = () => {};
 
@@ -10,28 +10,28 @@ const Put = () => {};
 const DeleteData = () => {};
 
 const PostLogin = (usuario, password) => {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-    const urlencoded = new URLSearchParams();
-    urlencoded.append('email', usuario);
-    urlencoded.append('password', password);
+  const urlencoded = new URLSearchParams();
+  urlencoded.append("email", usuario);
+  urlencoded.append("password", password);
 
-    const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-    };
-    const datos = fetch(`${url}/login_admin`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => result);
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: urlencoded,
+    redirect: "follow",
+  };
+  const datos = fetch(`${url}/login_admin`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => result);
 
-    return datos.then((result) => result);
+  return datos.then((result) => result);
 
-    // return fetch(`${url}/login_admin`, requestOptions).then((response) => {
-    //     response.json().then((result) => result);
-    // });
+  // return fetch(`${url}/login_admin`, requestOptions).then((response) => {
+  //     response.json().then((result) => result);
+  // });
 };
 
 export { Post, Get, Put, DeleteData, PostLogin, url };
