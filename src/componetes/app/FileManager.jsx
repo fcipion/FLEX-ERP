@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { formatFileSize } from "../../utils/size-file";
 import MenuPanel from "./MenuPanel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { url } from "../../api/Peticiones";
 
 const FileManager = ({
   items = [],
@@ -215,7 +216,7 @@ const FileManager = ({
                     fileExtension
                   );
                   const preview = isImage
-                    ? file.src || URL.createObjectURL(file)
+                    ? `${url}/${file.src}` || URL.createObjectURL(file)
                     : null;
 
                   return (

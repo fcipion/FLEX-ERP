@@ -90,8 +90,7 @@ const AddUpdateOrden = ({
 
   useEffect(() => {
     if (!orden) return;
-
-    setDataRows(orden);
+    setDataRows(orden.detalles);
     dispatch(getOrdenById(orden._id));
   }, [orden]);
 
@@ -168,7 +167,6 @@ const AddUpdateOrden = ({
   });
   const [showPDF, setShowPDF] = useState(false);
   const [dataRows, setDataRows] = useState([]);
-
   const generateUUIDTMP = useCallback(() => {
     let running = true;
 
@@ -228,17 +226,18 @@ const AddUpdateOrden = ({
 
   const handleSetListFiles = useCallback(
     (files) => {
+      setFileListOpen({ line_id: "", isOpen: false, index: null });
+      if (orden) return; // tmp for update
       setDataRows(
         dataRows.map((row, i) => {
           i == fileListOpen.index && (row.galeria = files);
           return row;
         })
       );
-      setFileListOpen({ line_id: "", isOpen: false, index: null });
     },
-    [fileListOpen, dataRows]
+    [fileListOpen, dataRows, orden]
   );
-
+  console.log({ orden });
   return (
     <React.Fragment>
       {showPDF && orden ? (
