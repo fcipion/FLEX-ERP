@@ -15,10 +15,11 @@ class Servicio extends Base {
   formatDataOrder(vendedor, data) {
     let _data = { ...data };
     let formdata = new FormData();
-    let detalles = Array.from(_data || []).map((d) => {
-      delete d.galeria;
-      return d;
+    let detalles = Array.from(_data.detalles || []).map((d) => {
+      const { galeria, ...data } = d;
+      return data;
     });
+
     formdata.append("sucursal", _data.sucursal);
     formdata.append("cliente", _data.cliente);
     formdata.append("doctor", _data.doctor);

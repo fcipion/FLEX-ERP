@@ -35,6 +35,7 @@ const slice = createSlice({
           id: crypto.randomUUID(),
           reference: action.payload.reference,
           orderId: action.payload.orderId,
+          uploaded: false,
           file,
         })),
       ];

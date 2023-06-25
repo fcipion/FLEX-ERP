@@ -1,13 +1,27 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
 import { dispatch, useSelector } from "store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import ItemPopUpUploadingFile from "./Item";
 import {
   changeStatusModalUpload,
   addMultipleUploading,
   removeUploadFile,
+  updateUploading,
+  removeUploading,
 } from "store/slices/file";
+
+function convertSecondsToTime(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  return {
+    hours: hours || 0,
+    minutes: minutes || 0,
+    seconds: remainingSeconds || 0,
+  };
+}
 
 const PopUpUploadingFile = () => {
   const { upload, uploading, showPopUp } = useSelector((state) => state.files);
@@ -24,7 +38,7 @@ const PopUpUploadingFile = () => {
       },
       { data: {}, idsRemove: [] }
     );
-
+    console.log({ data, upload });
     dispatch(removeUploadFile(idsRemove));
 
     Object.keys(data).forEach((reference) => {
@@ -39,20 +53,29 @@ const PopUpUploadingFile = () => {
   }, [upload]);
 
   useEffect(() => {
-    console.log("update upload", upload);
     if (!Array.isArray(upload) || !upload.length) return;
     handleAddNewUploads(upload);
   }, [upload]);
 
   const handleClose = useCallback(() => {
     dispatch(changeStatusModalUpload(false));
-  }, []);
+    removeUploading(uploading.map((u) => u.id));
+  }, [uploading]);
 
   const handleChangeTime = useCallback(
     (time) => {
       setTotalTime(totalTime + time);
     },
     [totalTime]
+  );
+
+  const { hours, minutes } = useMemo(
+    () => convertSecondsToTime(totalTime),
+    [totalTime]
+  );
+  const totalUploading = useMemo(
+    () => uploading.filter((u) => !u.uploaded).length,
+    [uploading]
   );
 
   return (
@@ -73,7 +96,9 @@ const PopUpUploadingFile = () => {
       }}
     >
       <div style={{ display: "flex", padding: "0px 12px" }}>
-        <h3 style={{ fontSize: "1.1em" }}>Subiendo 1 elemento</h3>
+        <h3 style={{ fontSize: "1.1em" }}>
+          Subiendo {totalUploading} elemento
+        </h3>
         <div
           style={{
             flex: "1 1 auto",
@@ -90,21 +115,27 @@ const PopUpUploadingFile = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          background: "#edf2fc",
-          padding: "10px 12px",
-        }}
-      >
-        {totalTime > 0 ? (
-          <span>Quedan 3 h 49 min...</span>
-        ) : (
-          <span>Calculando minutos...</span>
-        )}
-        <div style={{ cursor: "pointer", color: "blue" }}>Cancelar</div>
-      </div>
+      {Array.from(uploading).length > 0 && totalUploading > 0 ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            background: "#edf2fc",
+            padding: "10px 12px",
+          }}
+        >
+          {totalTime > 0 ? (
+            <span>
+              Quedan {hours > 0 ? `${hours} h` : ""}{" "}
+              {minutes > 0 ? `${minutes} min` : ""}
+              {hours <= 0 && minutes <= 0 ? "Quedan unos segundos" : ""}...
+            </span>
+          ) : (
+            <span>Calculando minutos...</span>
+          )}
+          {/* <div style={{ cursor: "pointer", color: "blue" }}>Cancelar</div> */}
+        </div>
+      ) : null}
       <div
         style={{
           padding: "0px 12px",
@@ -114,15 +145,26 @@ const PopUpUploadingFile = () => {
           paddingTop: 8,
         }}
       >
-        {Array.from(uploading || []).map(({ file, reference, orderId }, i) => (
-          <ItemPopUpUploadingFile
-            key={i}
-            file={file}
-            reference={reference}
-            orderId={orderId}
-            changeTime={handleChangeTime}
-          />
-        ))}
+        {Array.from(uploading || []).map(
+          ({ file, reference, orderId, id }, i) => (
+            <ItemPopUpUploadingFile
+              key={i}
+              file={file}
+              reference={reference}
+              orderId={orderId}
+              changeTime={handleChangeTime}
+              onCompleted={() => {
+                console.log("complete");
+                dispatch(
+                  updateUploading({
+                    id,
+                    uploaded: true,
+                  })
+                );
+              }}
+            />
+          )
+        )}
       </div>
     </div>
   );

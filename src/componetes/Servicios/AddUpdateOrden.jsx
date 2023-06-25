@@ -126,6 +126,7 @@ const AddUpdateOrden = ({
     dispatch(changeStatusModalUpload(true));
 
     Array.from(values.detalles || []).forEach((detalle) => {
+      console.log([detalle]);
       if (!Array.isArray(detalle.galeria)) return;
       let files = Array.from(detalle.galeria).filter(
         (file) => file instanceof File

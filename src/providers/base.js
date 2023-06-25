@@ -79,98 +79,93 @@ class Base {
       setProgress: () => {},
       setUploadSpeed: () => {},
       setRemainingTime: () => {},
-      cancelUpload: () => {},
       setIsUploading: () => {},
-      setIsConnected: () => {},
     }
   ) {
-    let cancelToken;
     let startTime;
     let elapsedTime = 0;
     let totalUploaded = 0;
     let prevUploaded = 0;
+    let currentRequest;
 
     return new Promise(async (resolve) => {
       if (typeof callback.setProgress == "function") {
         callback.setProgress(0);
       }
 
-      try {
-        await this.axios.post(endpoint, file, {
-          cancelToken: new axios.CancelToken(function executor(c) {
-            cancelToken = c;
-          }),
-          onUploadProgress: (progressEvent) => {
-            const { loaded, total } = progressEvent;
-            totalUploaded = loaded;
+      const upload = async () => {
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
 
-            if (typeof callback.setProgress == "function") {
-              callback.setProgress(Math.round((loaded / total) * 100));
-            }
+          currentRequest = await this.axios.post(endpoint, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const { loaded, total } = progressEvent;
+              totalUploaded = loaded;
 
-            if (!startTime) {
-              startTime = Date.now();
-            } else {
-              elapsedTime = (Date.now() - startTime) / 1000;
-              const uploadedBytes = totalUploaded - prevUploaded;
-              const uploadSpeedBytesPerSec = uploadedBytes / elapsedTime;
-
-              if (typeof callback.setUploadSpeed == "function") {
-                callback.setUploadSpeed(uploadSpeedBytesPerSec);
+              if (typeof callback.setProgress == "function") {
+                callback.setProgress(Math.round((loaded / total) * 100));
               }
 
-              prevUploaded = totalUploaded;
+              if (!startTime) {
+                startTime = Date.now();
+              } else {
+                elapsedTime = (Date.now() - startTime) / 1000;
+                const uploadedBytes = totalUploaded - prevUploaded;
+                const uploadSpeedBytesPerSec = uploadedBytes / elapsedTime;
 
-              const remainingBytes = total - totalUploaded;
-              const remainingTimeSeconds =
-                remainingBytes / uploadSpeedBytesPerSec;
+                if (typeof callback.setUploadSpeed == "function") {
+                  callback.setUploadSpeed(uploadSpeedBytesPerSec);
+                }
 
-              if (typeof callback.setRemainingTime == "function") {
-                callback.setRemainingTime(remainingTimeSeconds);
+                prevUploaded = totalUploaded;
+
+                const remainingBytes = total - totalUploaded;
+                const remainingTimeSeconds =
+                  remainingBytes / uploadSpeedBytesPerSec;
+
+                if (typeof callback.setRemainingTime == "function") {
+                  callback.setRemainingTime(remainingTimeSeconds);
+                }
               }
-            }
-          },
-        });
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          return resolve({ error: { message: "Cancell uploading" } });
-        } else {
-          if (typeof callback.setIsConnected == "function") {
-            callback.setIsConnected(false);
+            },
+          });
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            return resolve({ error: { message: "Cancel uploading" } });
           }
-          typeof cancelToken == "function" && cancelToken();
-        }
-      } finally {
-        if (typeof callback.setIsUploading == "function") {
-          callback.setIsUploading(false);
-        }
+        } finally {
+          if (typeof callback.setIsUploading == "function") {
+            callback.setIsUploading(false);
+          }
 
-        if (typeof callback.setProgress == "function") {
-          callback.setProgress(false);
+          if (typeof callback.setRemainingTime == "function") {
+            callback.setRemainingTime(false);
+          }
+
+          if (typeof callback.setUploadSpeed == "function") {
+            callback.setUploadSpeed(false);
+          }
+
+          startTime = null;
+          elapsedTime = 0;
+          totalUploaded = 0;
+          prevUploaded = 0;
         }
+      };
 
-        if (typeof callback.setRemainingTime == "function") {
-          callback.setRemainingTime(false);
-        }
+      upload();
+      window.addEventListener("online", async () => {
+        upload();
+      });
 
-        if (typeof callback.setUploadSpeed == "function") {
-          callback.setUploadSpeed(false);
-        }
-
-        startTime = null;
-        elapsedTime = 0;
-        totalUploaded = 0;
-        prevUploaded = 0;
-      }
-
-      if (
-        typeof callback.cancelUpload == "function" &&
-        typeof cancelToken == "function"
-      ) {
-        callback.cancelUpload(() => {
-          cancelToken();
-        });
-      }
+      window.addEventListener("offline", () => {
+        console.log("Subida de archivo pausada por el usuario");
+        currentRequest.cancel("Subida de archivo pausada por el usuario");
+      });
     });
   }
 }

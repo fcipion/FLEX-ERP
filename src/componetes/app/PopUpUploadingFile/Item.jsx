@@ -19,28 +19,33 @@ class Provider extends Base {
 
 const provider = new Provider();
 
-const ItemPopUpUploadingFile = ({ file, reference, orderId, changeTime }) => {
+const ItemPopUpUploadingFile = ({
+  file,
+  reference,
+  orderId,
+  changeTime,
+  onCompleted,
+}) => {
   const [progress, setProgress] = useState(0);
 
   const handleUpload = useCallback(async () => {
-    await provider.uploadFile(`/${orderId}/upload-file-orden-service`, file, {
-      cancelUpload: (next) => {},
-      setIsConnected: (isConnected) => {
-        console.log({ isConnected });
-      },
-      setProgress: (progress) => {
-        console.log({ progress });
-      },
-      setUploadSpeed: (speed) => {
-        console.log({ speed });
-      },
-      setRemainingTime: (remainingTime) => {
-        console.log({ remainingTime });
-      },
-      setIsUploading: (uploading) => {
-        console.log({ uploading });
-      },
-    });
+    await provider.uploadFile(
+      `/${orderId}/upload-file-orden-service/${reference}`,
+      file,
+      {
+        setProgress: (progress) => {
+          setProgress(progress);
+          progress >= 100 && onCompleted();
+        },
+        setUploadSpeed: (speed) => {
+          // console.log({ speed });
+        },
+        setRemainingTime: changeTime,
+        setIsUploading: (uploading) => {
+          // console.log({ uploading });
+        },
+      }
+    );
   }, [file, reference, orderId]);
 
   useEffect(() => {
