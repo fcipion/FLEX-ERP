@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   upload: [],
-  uploading: [],
   showPopUp: false,
 };
 
@@ -18,44 +17,29 @@ const slice = createSlice({
           reference: action.payload.reference,
           orderId: action.payload.orderId,
           file,
+          status: "pending",
+          percentage: 0,
+          uploadedChunkSize: 0,
         })),
       ];
+    },
+
+    updateFile(state, action) {
+      state.upload = state.upload.map((data) => {
+        if (data.id == action.payload.id) {
+          data = {
+            ...data,
+            ...action.payload,
+          };
+        }
+        return data;
+      });
     },
 
     removeUploadFile(state, action) {
       state.upload = state.upload.filter(
         (u) => !Array.from(action.payload || []).includes(u.id)
       );
-    },
-
-    addMultipleUploading(state, action) {
-      state.uploading = [
-        ...state.uploading,
-        ...Array.from(action.payload.files).map((file) => ({
-          id: crypto.randomUUID(),
-          reference: action.payload.reference,
-          orderId: action.payload.orderId,
-          uploaded: false,
-          file,
-        })),
-      ];
-    },
-
-    removeUploading(state, action) {
-      state.uploading = state.uploading.filter((u) =>
-        Array.from(action.payload || []).includes(u.id)
-      );
-    },
-
-    updateUploading(state, action) {
-      state.uploading = state.uploading.map((u) => {
-        if (u.id !== action.payload.id) return u;
-
-        return {
-          ...u,
-          ...action.payload,
-        };
-      });
     },
 
     changeStatusModalUpload(state, action) {
@@ -66,11 +50,9 @@ const slice = createSlice({
 
 export const {
   addMultipleUploadFile,
-  addMultipleUploading,
   removeUploadFile,
-  removeUploading,
-  updateUploading,
   changeStatusModalUpload,
+  updateFile,
 } = slice.actions;
 
 export default slice.reducer;

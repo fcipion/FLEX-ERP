@@ -16,3 +16,9 @@
 .card-file:hover {
   background-color: #cecece;
 }
+
+.headerStyle {
+  background-color: #8ccaf5;
+  border-radius: 0.1px;
+  border: 0.5px solid blue;
+}

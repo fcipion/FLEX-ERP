@@ -70,6 +70,7 @@ import { url } from "../../api/Peticiones";
 import { PDFViewer } from "@react-pdf/renderer";
 
 import servicioProvider from "../../providers/server/servicio";
+import VisorImage from "../../componetes/app/VisorImage";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -84,9 +85,12 @@ const AddUpdateOrden = ({
   orden,
   setOrden,
   setOpenAlert,
+  callbackOnSuccess,
 }) => {
   const vendedor = JSON.parse(localStorage.getItem("userData")).sub;
   const { ordenDetail } = useSelector((state) => state.orden);
+  const [showVisor, setShowVisor] = useState(false);
+  const [srcImg, setSrcImg] = useState("");
 
   useEffect(() => {
     if (!orden) return;
@@ -95,6 +99,7 @@ const AddUpdateOrden = ({
   }, [orden]);
 
   const onSubmit = async (values, actions) => {
+    values.detalles = dataRows;
     if (values.detalles.length) return submitOrden(values, actions);
     showError("Agrega al menos un producto");
   };
@@ -121,22 +126,26 @@ const AddUpdateOrden = ({
 
     // cancel();
     // setOpenAlert(true);
+
+    //REMOVE COMMENTS
     setLoading(false);
+    cancel();
+    callbackOnSuccess?.();
     dispatch(changeStatusModalUpload(true));
 
     Array.from(values.detalles || []).forEach((detalle) => {
-      console.log([detalle]);
       if (!Array.isArray(detalle.galeria)) return;
       let files = Array.from(detalle.galeria).filter(
-        (file) => file instanceof File
+        (data) => data.file instanceof File
       );
+
       if (!files.length) return;
 
       dispatch(
         addMultipleUploadFile({
           files,
           reference: detalle.uuid,
-          orderId: response.data._id,
+          orderId: response.data._id || orden._id,
         })
       );
     });
@@ -167,6 +176,7 @@ const AddUpdateOrden = ({
   });
   const [showPDF, setShowPDF] = useState(false);
   const [dataRows, setDataRows] = useState([]);
+
   const generateUUIDTMP = useCallback(() => {
     let running = true;
 
@@ -189,7 +199,7 @@ const AddUpdateOrden = ({
         galeria: [],
         unidad_medida: "",
         almacen: "",
-        estado: "",
+        estado: "Creada",
         comentarios: "",
       };
       return [...previewRows, data];
@@ -212,9 +222,10 @@ const AddUpdateOrden = ({
     );
 
     setDataRows((previewRows) => {
-      previewRows[indexRow][id] = value;
+      let newArray = [...previewRows];
+      newArray[indexRow] = { ...newArray[indexRow], [id]: value };
 
-      return [...previewRows];
+      return newArray;
     });
 
     SetFieldValue("detalles", dataRows);
@@ -224,20 +235,27 @@ const AddUpdateOrden = ({
     setFileListOpen({ isOpen: true, line_id: row.line_id, index });
   }, []);
 
-  const handleSetListFiles = useCallback(
-    (files) => {
-      setFileListOpen({ line_id: "", isOpen: false, index: null });
-      if (orden) return; // tmp for update
-      setDataRows(
-        dataRows.map((row, i) => {
-          i == fileListOpen.index && (row.galeria = files);
-          return row;
-        })
-      );
-    },
-    [fileListOpen, dataRows, orden]
-  );
-  console.log({ orden });
+  const handleSetListFiles = (files) => {
+    setFileListOpen({ line_id: "", isOpen: false, index: null });
+    setDataRows(
+      dataRows.map((row, i) => {
+        const _row = { ...row };
+        i == fileListOpen.index && (_row.galeria = files);
+        return _row;
+      })
+    );
+  };
+
+  const handleCloseVisor = () => {
+    setShowVisor(false);
+    setSrcImg("");
+  };
+
+  const handleItemSelect = (item) => {
+    setSrcImg(`${url}${item.src}`);
+    setShowVisor(true);
+  };
+
   return (
     <React.Fragment>
       {showPDF && orden ? (
@@ -274,6 +292,7 @@ const AddUpdateOrden = ({
             show={fileListOpen.isOpen}
             handleSetListFiles={handleSetListFiles}
             items={dataRows[fileListOpen.index]?.galeria || []}
+            itemSelect={handleItemSelect}
           />
           {/* ======= Formulario ====== */}
 
@@ -285,7 +304,9 @@ const AddUpdateOrden = ({
               doctor: orden && orden.doctor ? orden.doctor._id : "",
               fecha: orden && orden.fecha ? orden.fecha : Date.now(),
               fecha_compromiso:
-                orden && orden.fecha_compromiso ? orden.fecha_compromiso : "",
+                orden && orden.fecha_compromiso
+                  ? orden.fecha_compromiso
+                  : new Date().getTime(),
               vendedor: orden && orden.vendedor ? orden.vendedor._id : vendedor,
               createdAt:
                 orden && orden.createdAt ? orden.createdAt : Date.now(),
@@ -383,7 +404,6 @@ const AddUpdateOrden = ({
                         Errors={errors}
                         Touched={touched}
                         Id="cliente"
-                        SetFieldValue={setFieldValue}
                         Label="Cliente"
                         Value={values.cliente}
                         Onchange={(value) => {
@@ -506,7 +526,7 @@ const AddUpdateOrden = ({
                         fullWidth
                         multiline
                         size="small"
-                        label="Comentarios"
+                        label="Comentarios *"
                         onChange={(event) => {
                           setFieldValue("comentarios", event.target.value);
                         }}
@@ -836,6 +856,12 @@ const AddUpdateOrden = ({
           </Formik>
         </div>
       )}
+
+      <VisorImage
+        handleClose={handleCloseVisor}
+        show={showVisor}
+        src={srcImg}
+      />
     </React.Fragment>
   );
 };

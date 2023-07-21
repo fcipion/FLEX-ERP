@@ -36,7 +36,6 @@ import { useFetchPersonData } from "../../hooks/useFetchPerson";
 
 const formSchema = Yup.object().shape({
   tipo_cliente: Yup.string().required("Requerido"),
-  vendedor: Yup.string().required("Requerido"),
   tipo_documento: Yup.string().required("Requerido"),
   documento: Yup.string()
     .matches(
@@ -44,23 +43,25 @@ const formSchema = Yup.object().shape({
       "Cédula incorrecta. Asegúrate de introducir todos los dígitos."
     )
     .required("Requerido"),
-  pagina_web: Yup.string().required("Requerido"),
-  whatsapp: Yup.string().required("Requerido"),
-  email: Yup.string().email("Invalid email").required("Requerido"),
-  telefono: Yup.string().required("Requerido"),
-  telefono1: Yup.string().required("Requerido"),
-  fax: Yup.number().required("Requerido"),
   moneda_curso: Yup.string().required("Requerido"),
   termino_pago: Yup.string().required("Requerido"),
-  limite_credito: Yup.string().required("Requerido"),
-  estatus: Yup.string().required("Requerido"),
+  nombre: Yup.string().required("Requerido"),
+  // vendedor: Yup.string().required("Requerido"),
+  // pagina_web: Yup.string().required("Requerido"),
+  // whatsapp: Yup.string().required("Requerido"),
+  // email: Yup.string().email("Invalid email").required("Requerido"),
+  // telefono: Yup.string().required("Requerido"),
+  // telefono1: Yup.string().required("Requerido"),
+  // fax: Yup.number().required("Requerido"),
+  // limite_credito: Yup.string().required("Requerido"),
+  // estatus: Yup.string().required("Requerido"),
 });
 
 function generateId() {
   return Date.now().toString() + Math.random().toString().slice(2);
 }
 
-const Clientes = () => {
+const Clientes = ({ modoProp }) => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [messageInfo, setMessageInfo] = React.useState({ type: "", title: "" });
   const [optiones, setOptions] = React.useState([]);
@@ -81,8 +82,6 @@ const Clientes = () => {
     message: "",
     open: false,
   });
-  const [modoAccion, setModoAccion] = useState();
-  const [openConfDlg, setOpenConfDlg] = useState(false);
 
   let formTitulo = "";
   switch (modo) {
@@ -108,12 +107,14 @@ const Clientes = () => {
     }
   }, [accion]);
   React.useEffect(() => {
-    if (modo === "create") {
+    const _modo = modo || modoProp;
+
+    if (_modo === "create") {
       setOptions(["Crear", "Crear nuevo", "Crear editar"]);
     } else {
       setOptions(["Editar", "Editar nuevo", "Copiar"]);
     }
-  }, [modo]);
+  }, [modo, modoProp]);
 
   const handlerAdd = () => {
     navegate(`/cliente/create/0/${generateId()}`);
@@ -168,8 +169,12 @@ const Clientes = () => {
             /* eslint no-underscore-dangle: 0 */
             tipo_cliente: cliente.data ? cliente.data.tipo_cliente._id : "",
             nombre: cliente.data ? cliente.data.nombre : "",
+            lugar_nacimiento: cliente.data ? cliente.data.lugar_nacimiento : "",
+            fecha_nacimiento: cliente.data ? cliente.data.fecha_nacimiento : "",
+            genero: cliente.data ? cliente.data.genero : "",
+            estado_civil: cliente.data ? cliente.data.estado_civil : "",
             /* eslint no-underscore-dangle: 0 */
-            vendedor: cliente.data ? cliente.data.vendedor._id : "",
+            vendedor: cliente.data ? cliente.data.vendedor._id : userData.sub,
             /* eslint no-underscore-dangle: 0 */
             tipo_documento: cliente.data ? cliente.data.tipo_documento._id : "",
             documento: cliente.data ? cliente.data.documento : "",
@@ -184,126 +189,125 @@ const Clientes = () => {
             /* eslint no-underscore-dangle: 0 */
             termino_pago: cliente.data ? cliente.data.termino_pago._id : "",
             limite_credito: cliente.data ? cliente.data.limite_credito : "",
-            estatus: cliente.data ? cliente.data.estatus : "",
+            estatus: cliente.data ? cliente.data.estatus : true,
+            foto: cliente.data ? cliente.data.foto : "",
           }}
           validationSchema={formSchema}
-          onSubmit={(value, { setSubmitting, resetForm }) => {
-            setTimeout(async () => {
-              // const modoAccion = modo;
-              let result = "";
+          onSubmit={async (_value, { setSubmitting, resetForm }) => {
+            const { modoAccion, ...value } = _value;
+            let result = "";
+            if (modo === "view") {
+              setAlert({
+                type: "warning",
+                open: true,
+                message: MensajeVisualizar,
+              });
+              setSubmitting(false);
+              return;
+            }
+            console.log(1);
+            console.log("modoAccion", modoAccion);
+            try {
+              switch (modoAccion) {
+                case "Crear":
+                  result = await axios.post(`${url}/registro_cliente`, value);
 
-              if (modo === "view") {
-                setAlert({
-                  type: "warning",
-                  open: true,
-                  message: MensajeVisualizar,
-                });
-                setSubmitting(false);
-                return;
-              }
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Creada el cliente: ${result.data.data.descripcion}`,
+                    });
+                  }
+                  break;
+                case "Crear nuevo":
+                  result = await axios.post(`${url}/registro_cliente`, value);
 
-              try {
-                switch (modoAccion) {
-                  case "Crear":
-                    result = await axios.post(`${url}/registro_cliente`, value);
-
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Creada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  case "Crear nuevo":
-                    result = await axios.post(`${url}/registro_cliente`, value);
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Creada el cliente: ${result.data.data.descripcion}`,
+                    });
                     resetForm();
+                  }
+                  break;
+                case "Crear editar":
+                  result = await axios.post(`${url}/registro_cliente`, value);
+                  /* eslint no-underscore-dangle: 0 */
 
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Creada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  case "Crear editar":
-                    result = await axios.post(`${url}/registro_cliente`, value);
-                    /* eslint no-underscore-dangle: 0 */
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Creada el cliente: ${result.data.data.descripcion}`,
+                    });
                     navegate(
                       `/cliente/edit/${result.data.data._id}/${generateId()}`
                     );
+                  }
+                  break;
+                case "Editar":
+                  result = await axios.put(
+                    `${url}/actualizar_cliente/${id}`,
+                    value
+                  );
 
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Creada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  case "Editar":
-                    result = await axios.put(
-                      `${url}/actualizar_cliente/${id}`,
-                      value
-                    );
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Actualizada el cliente: ${result.data.data.descripcion}`,
+                    });
+                  }
+                  break;
+                case "Editar nuevo":
+                  result = await axios.put(
+                    `${url}/actualizar_cliente/${id}`,
+                    value
+                  );
 
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Actualizada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-
-                  case "Editar nuevo":
-                    result = await axios.put(
-                      `${url}/actualizar_cliente/${id}`,
-                      value
-                    );
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Actualizada el cliente: ${result.data.data.descripcion}`,
+                    });
                     resetForm();
                     navegate(`/cliente/create/0/${generateId()}`);
+                  }
+                  break;
+                case "Copiar":
+                  result = await axios.post(`${url}/registro_cliente`, value);
 
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Actualizada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  case "Copiar":
-                    result = await axios.post(`${url}/registro_cliente`, value);
-
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "success",
-                        title: `Copiada el cliente: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  case "delete":
-                    result = await axios.delete(
-                      `${url}/eliminar_cliente/${id}`,
-                      value
-                    );
-
-                    if (!result.error) {
-                      setMessageInfo({
-                        type: "warning",
-                        title: `cliente eliminado: ${result.data.data.descripcion}`,
-                      });
-                    }
-                    break;
-                  default:
-                    break;
-                }
-              } catch (error) {
-                setSubmitting(false);
-                setMessageInfo({
-                  type: "error",
-                  title: `Error creando cliente: ${JSON.stringify(error)}`,
-                });
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "success",
+                      title: `Copiada el cliente: ${result.data.data.descripcion}`,
+                    });
+                  }
+                  break;
+                case "delete":
+                  console.log(2);
+                  result = await axios.delete(
+                    `${url}/eliminar_cliente/${id}`,
+                    value
+                  );
+                  console.log("result", result);
+                  if (!result.error) {
+                    setMessageInfo({
+                      type: "warning",
+                      title: `cliente eliminado: ${result.data.data.descripcion}`,
+                    });
+                  }
+                  break;
+                default:
+                  break;
               }
-
+            } catch (error) {
               setSubmitting(false);
-            }, 400);
+              setMessageInfo({
+                type: "error",
+                title: `Error creando cliente: ${JSON.stringify(error)}`,
+              });
+            }
+
+            setSubmitting(false);
           }}
         >
           {({
@@ -320,31 +324,46 @@ const Clientes = () => {
 
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const { isLoading, personData, getPerson } = useFetchPersonData();
+
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const [openConfDlg, setOpenConfDlg] = useState(false);
+
             // eslint-disable-next-line react-hooks/rules-of-hooks
             useEffect(() => {
               if (values.documento) {
-                getPerson(values.documento.replace(/-/g, ""));
+                const documento = values.documento.replace(/[-_]/g, "");
+
+                if (documento.length === 11) {
+                  getPerson(documento);
+                }
               }
             }, [values.documento]);
             // eslint-disable-next-line react-hooks/rules-of-hooks
             useEffect(() => {
               if (personData) {
-                setFieldValue("nombre", personData.nombre);
-                setFieldValue("fecha_nacimiento", personData.fecha_nacimiento);
-                setFieldValue("lugar_nacimiento", personData.lugar_nacimiento);
-                setFieldValue("genero", personData.genero);
-                setFieldValue("estado_civil", personData.estado_civil);
-                setFieldValue("foto", personData.foto);
+                setFieldValue("nombre", personData.nombre || "");
+                setFieldValue(
+                  "fecha_nacimiento",
+                  personData.fecha_nacimiento || ""
+                );
+                setFieldValue(
+                  "lugar_nacimiento",
+                  personData.lugar_nacimiento || ""
+                );
+                setFieldValue("genero", personData.genero || "");
+                setFieldValue("estado_civil", personData.estado_civil || "");
+                setFieldValue("foto", personData.foto || "");
               }
             }, [personData]);
 
             const handlerDelete = () => {
-              setModoAccion("delete");
+              setFieldValue("modoAccion", "delete");
+
               setOpenConfDlg(true);
             };
 
             const handlerCreate = (value) => {
-              setModoAccion(value);
+              setFieldValue("modoAccion", value);
               handleSubmit();
             };
             const handlerPrint = () => {
@@ -451,86 +470,98 @@ const Clientes = () => {
                             introducir la cédula del cliente
                           </Divider>
                         </Grid>
-                        <Grid item xs={6}>
-                          <TextField
-                            value={values.nombre}
-                            id="nombre"
-                            name="nombre"
-                            fullWidth
-                            label={values.nombre ? "" : "Nombre"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={errors.nombre && touched.nombre}
-                            helperText={touched.nombre && errors.nombre}
-                            disabled
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <TextField
-                            value={values.fecha_nacimiento}
-                            id="fecha_nacimiento"
-                            name="fecha_nacimiento"
-                            fullWidth
-                            label={
-                              values.fecha_nacimiento
-                                ? ""
-                                : "Fecha de nacimiento"
-                            }
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <TextField
-                            value={values.lugar_nacimiento}
-                            id="lugar_nacimiento"
-                            name="lugar_nacimiento"
-                            fullWidth
-                            label={
-                              values.lugar_nacimiento
-                                ? ""
-                                : "Lugar de nacimiento"
-                            }
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <TextField
-                            value={values.genero}
-                            id="genero"
-                            name="genero"
-                            fullWidth
-                            label={values.genero ? "" : "Genero"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <TextField
-                            value={values.estado_civil}
-                            id="estado_civil"
-                            name="estado_civil"
-                            fullWidth
-                            label={values.genero ? "" : "Estado civil"}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            disabled
-                          />
-                        </Grid>
-                        <Grid item xs={6} justifyContent="center">
-                          {values.foto && (
-                            <img
-                              src={values.foto}
-                              alt={values.nombre || "Foto de persona"}
-                            />
-                          )}
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Divider />
+                        <Grid
+                          item
+                          container
+                          xs={12}
+                          spacing={3}
+                          justifyContent={"space-between"}
+                        >
+                          <Grid
+                            item
+                            md={values.foto ? 2 : 0}
+                            lg={values.foto ? 1 : 0}
+                            justifyContent="center"
+                          >
+                            {values.foto && (
+                              <img
+                                src={values.foto}
+                                alt={values.nombre || "Foto de persona"}
+                              />
+                            )}
+                          </Grid>
+                          <Grid
+                            item
+                            container
+                            lg={values.foto ? 10.7 : 12}
+                            spacing={2}
+                          >
+                            <Grid item md={6} xl={12}>
+                              <TextField
+                                value={values.nombre}
+                                id="nombre"
+                                name="nombre"
+                                fullWidth
+                                label={values.nombre ? "" : "Nombre Completo"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors.nombre && touched.nombre}
+                                helperText={touched.nombre && errors.nombre}
+                              />
+                            </Grid>
+                            <Grid item md={6} xl={12}>
+                              <TextField
+                                value={values.fecha_nacimiento}
+                                id="fecha_nacimiento"
+                                name="fecha_nacimiento"
+                                fullWidth
+                                label={
+                                  values.fecha_nacimiento
+                                    ? ""
+                                    : "Fecha de nacimiento"
+                                }
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </Grid>
+                            <Grid item md={6} xl={12}>
+                              <TextField
+                                value={values.lugar_nacimiento}
+                                id="lugar_nacimiento"
+                                name="lugar_nacimiento"
+                                fullWidth
+                                label={
+                                  values.lugar_nacimiento
+                                    ? ""
+                                    : "Lugar de nacimiento"
+                                }
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </Grid>
+                            <Grid item md={3} xl={12}>
+                              <TextField
+                                value={values.genero}
+                                id="genero"
+                                name="genero"
+                                fullWidth
+                                label={values.genero ? "" : "Genero"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </Grid>
+                            <Grid item md={3} xl={12}>
+                              <TextField
+                                value={values.estado_civil}
+                                id="estado_civil"
+                                name="estado_civil"
+                                fullWidth
+                                label={values.genero ? "" : "Estado civil"}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                              />
+                            </Grid>
+                          </Grid>
                         </Grid>
                         <Grid item xs={12}>
                           <Divider>Otros datos</Divider>
@@ -538,12 +569,12 @@ const Clientes = () => {
                         <Grid item xs={6}>
                           <TextField
                             id="pagina_web"
-                            label="pagina_web"
+                            label="Pagina web"
                             onBlur={handleBlur}
                             error={errors.pagina_web && touched.pagina_web}
                             helperText={touched.pagina_web && errors.pagina_web}
                             fullWidth
-                            multiline
+                            // multiline
                             value={values.pagina_web}
                             onChange={handleChange}
                           />
@@ -745,7 +776,7 @@ const Clientes = () => {
                                 }}
                               />
                             }
-                            label="Inactivo?"
+                            label="Activo"
                           />
                         </Grid>
 

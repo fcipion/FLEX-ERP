@@ -33,7 +33,9 @@ class Base {
               ? response.data.error.message
               : error.message;
 
-          return resolve({ error: { message } });
+          return resolve({
+            error: { ...(response?.data?.error || {}), message },
+          });
         });
     });
   }
@@ -41,7 +43,24 @@ class Base {
   async update(endpoint, data = {}, config = {}) {
     return new Promise((resolve) => {
       this.axios
-        .patch(endpoint, data, config)
+        .put(endpoint, data, config)
+        .then((res) => resolve(res.data))
+        .catch((error) => {
+          const response = error.response;
+          const message =
+            response && response.data && response.data.error
+              ? response.data.error.message
+              : error.message;
+
+          return resolve({ error: { message } });
+        });
+    });
+  }
+
+  async put(endpoint, data = {}, config = {}) {
+    return new Promise((resolve) => {
+      this.axios
+        .put(endpoint, data, config)
         .then((res) => resolve(res.data))
         .catch((error) => {
           const response = error.response;

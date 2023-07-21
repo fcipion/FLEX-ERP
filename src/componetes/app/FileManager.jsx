@@ -10,17 +10,21 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatFileSize } from "../../utils/size-file";
 import MenuPanel from "./MenuPanel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Download from "@mui/icons-material/Download";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { url } from "../../api/Peticiones";
 
 const FileManager = ({
   items = [],
   show = false,
+  upload = true,
   onDelete = () => {},
   handleSetListFiles = () => {},
+  itemSelect = () => {},
 }) => {
   const fileInputRef = useRef(null);
   const [isMosaic, setIsMosaic] = useState(false);
@@ -37,25 +41,39 @@ const FileManager = ({
 
   const handleDragOver = useCallback(
     (e) => {
+      if (!upload) return;
       e.preventDefault();
       !inDrag && setInDrag(true);
     },
-    [inDrag]
+    [inDrag, upload]
   );
 
   const handleDrop = useCallback(
     (e) => {
+      if (!upload) return;
       e.preventDefault();
       setInDrag(false);
-      setFile([...files, ...e.dataTransfer.files]);
+      setFile([
+        ...files,
+        ...Array.from(e.dataTransfer.files).map((file) => {
+          return {
+            file,
+            customName: `${new Date().getTime()}----${file.name}`,
+          };
+        }),
+      ]);
     },
-    [files]
+    [files, upload]
   );
 
-  const onDragLeave = useCallback((e) => {
-    e.preventDefault();
-    setInDrag(false);
-  }, []);
+  const onDragLeave = useCallback(
+    (e) => {
+      if (!upload) return;
+      e.preventDefault();
+      setInDrag(false);
+    },
+    [upload]
+  );
 
   const handleChangeStatusView = useCallback(() => {
     setIsMosaic(!isMosaic);
@@ -67,23 +85,82 @@ const FileManager = ({
 
   const handleRemove = useCallback(
     (index, item) => {
+      if (!upload) return;
       typeof onDelete == "function" && onDelete(item);
       setFile(files.filter((_, i) => index !== i));
     },
-    [files]
+    [files, upload]
   );
 
   const handleOpenFile = useCallback(() => {
+    if (!upload) return;
     fileInputRef.current.click();
-  }, [fileInputRef]);
+  }, [fileInputRef, upload]);
 
   const handleChangeFile = useCallback(
     (e) => {
+      if (!upload) return;
       let _files = e?.target?.files ? Array.from(e?.target?.files) : [];
-      setFile([...files, ..._files]);
+
+      setFile([
+        ...files,
+        ...Array.from(_files).map((file) => {
+          return {
+            file,
+            customName: `${new Date().getTime()}----${file.name}`,
+          };
+        }),
+      ]);
     },
-    [files]
+    [files, upload]
   );
+
+  const itemsMenu = useMemo(() => {
+    let items = [
+      {
+        icon: { Component: RemoveRedEyeIcon },
+        title: "Ver",
+        key: "view",
+      },
+    ];
+
+    if (upload) {
+      items.push({
+        icon: { Component: DeleteIcon },
+        title: "Remover",
+        key: "remove",
+      });
+    }
+
+    items.push({
+      icon: { Component: Download },
+      title: "Descargar",
+      key: "download",
+    });
+
+    return items;
+  }, [upload]);
+
+  const handleDownload = (file) => {
+    console.log({ file });
+    fetch(`${url}${file.src}/download`)
+      .then((response) => {
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", file.name);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.error("Error al descargar el archivo:", error);
+      });
+  };
 
   return (
     <div
@@ -103,23 +180,34 @@ const FileManager = ({
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragLeave={onDragLeave}
-      onDragEle
       onDrop={handleDrop}
     >
-      <form method="post" enctype="multipart/form-data" style={{ opacity: 0 }}>
-        <input
-          type="file"
-          name="files[]"
-          multiple
-          accept=".jpg, .jpeg, .png"
-          ref={fileInputRef}
-          onChange={handleChangeFile}
-        />
-      </form>
+      {upload ? (
+        <form
+          method="post"
+          encType="multipart/form-data"
+          style={{ opacity: 0 }}
+        >
+          <input
+            type="file"
+            name="files[]"
+            multiple
+            accept=".jpg, .jpeg, .png"
+            ref={fileInputRef}
+            onChange={handleChangeFile}
+          />
+        </form>
+      ) : (
+        ""
+      )}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div onClick={handleClose} style={{ cursor: "pointer" }}>
-          <ArrowBackIcon />
-        </div>
+        {upload ? (
+          <div onClick={handleClose} style={{ cursor: "pointer" }}>
+            <ArrowBackIcon />
+          </div>
+        ) : (
+          <div></div>
+        )}
         <div onClick={handleChangeStatusView} style={{ cursor: "pointer" }}>
           {isMosaic ? <FormatListBulletedIcon /> : <AutoAwesomeMosaicIcon />}
         </div>
@@ -144,13 +232,25 @@ const FileManager = ({
                   <TableRow>
                     <TableCell>Nombre</TableCell>
                     <TableCell>Tamaño de archivo</TableCell>
-                    <TableCell>
-                      <MoreVertIcon />
-                    </TableCell>
+                    {upload ? (
+                      <TableCell>
+                        <MoreVertIcon />
+                      </TableCell>
+                    ) : (
+                      ""
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody style={{ height: "100%" }}>
-                  {files.map((file, i) => {
+                  {files.map((data, i) => {
+                    const file = data.file || data;
+                    let etx = file.name.split(".").pop();
+                    let isImage = ["jpg", "jpeg", "png"].includes(etx);
+                    let _itemsMenu = itemsMenu.filter(
+                      (item) =>
+                        (item.key == "view" && isImage) || item.key != "view"
+                    );
+
                     return (
                       <TableRow
                         sx={{
@@ -163,21 +263,20 @@ const FileManager = ({
                           {file.name}
                         </TableCell>
                         <TableCell>{formatFileSize(file.size)}</TableCell>
-                        <TableCell>
-                          <MenuPanel
-                            buttonPoints
-                            items={[
-                              {
-                                icon: { Component: DeleteIcon },
-                                title: "Remove",
-                                key: "remove",
-                              },
-                            ]}
-                            handleClick={(key) => {
-                              key == "remove" && handleRemove(i, file);
-                            }}
-                          />
-                        </TableCell>
+
+                        {_itemsMenu.length ? (
+                          <TableCell>
+                            <MenuPanel
+                              buttonPoints
+                              items={_itemsMenu}
+                              handleClick={(key) => {
+                                key == "remove" && handleRemove(i, file);
+                                key == "view" && itemSelect(file);
+                                key == "download" && handleDownload(file);
+                              }}
+                            />
+                          </TableCell>
+                        ) : null}
                       </TableRow>
                     );
                   })}
@@ -207,20 +306,34 @@ const FileManager = ({
                   overflowY: "auto",
                 }}
               >
-                {files.map((file, i) => {
+                {files.map((data, i) => {
+                  const file = data.file || data;
                   const fileName = file.name;
-                  const fileExtension = fileName.substring(
-                    fileName.lastIndexOf(".") + 1
+                  let etx = fileName.split(".").pop();
+                  let isImage = ["jpg", "jpeg", "png"].includes(etx);
+                  let _itemsMenu = itemsMenu.filter(
+                    (item) =>
+                      (item.key == "view" && isImage) || item.key != "view"
                   );
-                  const isImage = ["jpg", "jpeg", "png"].includes(
-                    fileExtension
-                  );
+
                   const preview = isImage
-                    ? `${url}/${file.src}` || URL.createObjectURL(file)
+                    ? file.src
+                      ? `${url}/${file.src}`
+                      : URL.createObjectURL(file)
                     : null;
 
                   return (
-                    <div className="card-file" style={{ height: 200 }} key={i}>
+                    <div
+                      className="card-file"
+                      style={{
+                        height: 200,
+                        overflow: "hidden",
+                        display: "flex",
+                        flexDirection: "column",
+                        cursor: isImage ? "pointer" : "auto",
+                      }}
+                      key={i}
+                    >
                       <div
                         style={{
                           display: "flex",
@@ -228,7 +341,10 @@ const FileManager = ({
                           paddingBottom: 3,
                         }}
                       >
-                        <div className="truncate" style={{ maxWidth: "9rem" }}>
+                        <div
+                          className="truncate"
+                          style={{ maxWidth: "9rem", overflow: "hidden" }}
+                        >
                           <span
                             style={{ fontWeight: "bold", fontSize: ".9em" }}
                           >
@@ -236,27 +352,25 @@ const FileManager = ({
                           </span>
                         </div>
 
-                        <div
-                          style={{
-                            flex: "1 1 auto",
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <MenuPanel
-                            buttonPoints
-                            items={[
-                              {
-                                icon: { Component: DeleteIcon },
-                                title: "Remove",
-                                key: "remove",
-                              },
-                            ]}
-                            handleClick={(key) => {
-                              key == "remove" && handleRemove(i, file);
+                        {_itemsMenu.length ? (
+                          <div
+                            style={{
+                              flex: "1 1 auto",
+                              display: "flex",
+                              justifyContent: "flex-end",
                             }}
-                          />
-                        </div>
+                          >
+                            <MenuPanel
+                              buttonPoints
+                              items={_itemsMenu}
+                              handleClick={(key) => {
+                                key == "remove" && handleRemove(i, file);
+                                key == "view" && itemSelect(file);
+                                key == "download" && handleDownload(file);
+                              }}
+                            />
+                          </div>
+                        ) : null}
                       </div>
                       <div
                         style={{
@@ -268,9 +382,21 @@ const FileManager = ({
                           justifyContent: "center",
                           overflow: "hidden",
                         }}
+                        onClick={() => {
+                          isImage && itemSelect(file);
+                        }}
                       >
                         {isImage ? (
-                          <div style={{ width: "100%", height: "100%" }}>
+                          <div
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              overflow: "hidden",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
                             <img
                               src={preview}
                               style={{
@@ -293,7 +419,7 @@ const FileManager = ({
         </div>
       ) : null}
 
-      {!files.length ? (
+      {!files.length && upload ? (
         <div
           style={{
             flex: "1 1 auto",
@@ -346,6 +472,14 @@ const FileManager = ({
               </div>
             )}
           </div>
+        </div>
+      ) : null}
+
+      {!files.length && !upload ? (
+        <div
+          style={{ padding: "50px 0", textAlign: "center", fontSize: "3em" }}
+        >
+          <p>No hay archivos que mostrar</p>
         </div>
       ) : null}
     </div>

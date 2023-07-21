@@ -15,9 +15,25 @@ class Servicio extends Base {
   formatDataOrder(vendedor, data) {
     let _data = { ...data };
     let formdata = new FormData();
-    let detalles = Array.from(_data.detalles || []).map((d) => {
-      const { galeria, ...data } = d;
-      return data;
+    let details = [];
+
+    Array.from(_data.detalles || []).forEach((__data) => {
+      let galeries = [];
+
+      Array.from(__data.galeria || []).forEach((data) => {
+        const file = data.file || {};
+
+        galeries.push({
+          name: data.customName || data.name,
+          size: file.size || data.size,
+          ...(data.src ? { src: data.src } : {}),
+        });
+      });
+
+      details.push({
+        ...__data,
+        galeria: galeries,
+      });
     });
 
     formdata.append("sucursal", _data.sucursal);
@@ -29,7 +45,7 @@ class Servicio extends Base {
     formdata.append("fecha_compromiso", _data.fecha_compromiso);
     formdata.append("estatus", _data.estatus);
     formdata.append("compania", "");
-    formdata.append("detalles", JSON.stringify(detalles));
+    formdata.append("detalles", JSON.stringify(details));
 
     return formdata;
   }
