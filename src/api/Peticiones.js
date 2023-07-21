@@ -1,6 +1,4 @@
-// const url = "http://localhost:4201/api";
 const url = "https://api.integra3d.com/api";
-// const url = 'http://integra3dapp-alexander.ddns.net/api';
 
 const Post = () => {};
 
